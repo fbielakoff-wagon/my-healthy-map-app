@@ -10,8 +10,96 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 0) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_13_171828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "favourites", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "spot_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["spot_id"], name: "index_favourites_on_spot_id"
+    t.index ["user_id"], name: "index_favourites_on_user_id"
+  end
+
+  create_table "follows", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "follower_id", null: false
+    t.bigint "following_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["follower_id", "following_id"], name: "index_follows_on_follower_id_and_following_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+    t.index ["following_id"], name: "index_follows_on_following_id"
+  end
+
+  create_table "preferences", force: :cascade do |t|
+    t.string "categories"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_preferences_on_user_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.integer "rating"
+    t.bigint "spot_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["spot_id"], name: "index_reviews_on_spot_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "shares", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "spot_id", null: false
+    t.string "token"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["spot_id"], name: "index_shares_on_spot_id"
+    t.index ["token"], name: "index_shares_on_token", unique: true
+    t.index ["user_id"], name: "index_shares_on_user_id"
+  end
+
+  create_table "spots", force: :cascade do |t|
+    t.string "address"
+    t.string "category"
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.float "latitude"
+    t.float "longitude"
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_spots_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "avatar_url"
+    t.text "bio"
+    t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  add_foreign_key "favourites", "spots"
+  add_foreign_key "favourites", "users"
+  add_foreign_key "follows", "users", column: "follower_id"
+  add_foreign_key "follows", "users", column: "following_id"
+  add_foreign_key "preferences", "users"
+  add_foreign_key "reviews", "spots"
+  add_foreign_key "reviews", "users"
+  add_foreign_key "shares", "spots"
+  add_foreign_key "shares", "users"
+  add_foreign_key "spots", "users"
 end
