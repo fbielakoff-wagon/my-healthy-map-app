@@ -17,12 +17,13 @@ const CATEGORY_EMOJI = {
 
 export default class extends Controller {
   static values = { token: String, spots: Array }
+  static targets = ["mapContainer", "filterButton"]
 
   connect() {
     mapboxgl.accessToken = this.tokenValue
 
     this.map = new mapboxgl.Map({
-      container: this.element,
+      container: this.mapContainerTarget,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [-0.0778, 51.5074], // London fallback — Mapbox wants [longitude, latitude], not lat/lng
       zoom: 12
@@ -45,6 +46,19 @@ export default class extends Controller {
         .addTo(this.map)
 
       return { marker, category: spot.category }
+    })
+  }
+
+  filterByCategory(event) {
+    const category = event.currentTarget.dataset.category
+
+    this.markers.forEach(({ marker, category: markerCategory }) => {
+      const visible = category === "all" || markerCategory === category
+      marker.getElement().style.display = visible ? "" : "none"
+    })
+
+    this.filterButtonTargets.forEach((button) => {
+      button.classList.toggle("chip--active", button === event.currentTarget)
     })
   }
 

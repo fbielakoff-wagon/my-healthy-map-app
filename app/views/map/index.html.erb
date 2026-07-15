@@ -2,7 +2,20 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.26.0/mapbox-gl.css" rel="stylesheet">
 <% end %>
 
-<div id="map"
-     data-controller="map"
+<div data-controller="map"
      data-map-token-value="<%= @mapbox_token %>"
-     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>"></div>
+     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>">
+
+  <div class="mb-3">
+    <button type="button" class="chip chip--active" data-map-target="filterButton"
+            data-action="click->map#filterByCategory" data-category="all">All</button>
+    <button type="button" class="chip" data-map-target="filterButton"
+            data-action="click->map#filterByCategory" data-category="food">🥗 Food</button>
+    <button type="button" class="chip" data-map-target="filterButton"
+            data-action="click->map#filterByCategory" data-category="fitness">💪 Fitness</button>
+    <button type="button" class="chip" data-map-target="filterButton"
+            data-action="click->map#filterByCategory" data-category="wellness">🧘 Wellness</button>
+  </div>
+
+  <div id="map" data-map-target="mapContainer"></div>
+</div>
