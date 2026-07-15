@@ -1,2 +1,31 @@
-<h1>Spots#index</h1>
-<p>Find me in app/views/spots/index.html.erb</p>
+<h1>Spots</h1>
+
+<p>
+  Filters: city=<%= params[:city] || "(any)" %>,
+  category=<%= params[:category] || "(any)" %>
+  — <%= @spots.count %> result(s)
+</p>
+
+<ul>
+  <% @spots.each do |spot| %>
+    <li>
+      <strong><%= spot.name %></strong>
+      — <%= spot.category %> — <%= spot.city %>
+      <br>
+      <%= spot.address %>
+      <% if spot.description.present? %>
+        <br><em><%= spot.description %></em>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<p>
+  Try:
+  <a href="/spots?city=London&category=fitness">London fitness</a> |
+  <a href="/spots?city=London&category=food">London food</a> |
+  <a href="/spots?city=London&category=wellness">London wellness</a> |
+  <a href="/spots?city=Munich&category=fitness">Munich fitness</a> |
+  <a href="/spots?city=Munich&category=food">Munich food</a> |
+  <a href="/spots?city=Munich&category=wellness">Munich wellness</a>
+</p>
