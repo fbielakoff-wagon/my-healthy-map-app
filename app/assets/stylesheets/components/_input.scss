@@ -1,0 +1,31 @@
+.form-control {
+  font-family: $body-font;
+  font-size: 1rem;
+  color: $ink;
+  background-color: $soft-white;
+  border: 1px solid $sage-mist;
+  border-radius: $border-radius;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.2s ease-in-out,
+              box-shadow 0.2s ease-in-out,
+              background-color 0.2s ease-in-out;
+
+  &::placeholder {
+    color: $moss-gray;
+    opacity: 1;
+  }
+
+  &:focus {
+    color: $ink;
+    background-color: $soft-white;
+    border-color: $primary;
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.15);
+  }
+
+  &:disabled,
+  &[readonly] {
+    background-color: $light-gray;
+    color: $moss-gray;
+    cursor: not-allowed;
+  }
+}
