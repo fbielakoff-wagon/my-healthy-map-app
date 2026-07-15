@@ -1,0 +1,50 @@
+.place-card {
+  background-color: $soft-white;
+  border: 1px solid $sage-mist;
+  border-radius: $border-radius-lg;
+  padding: 1.25rem;
+  max-width: 24rem;
+
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba($primary, 0.35);
+    box-shadow: 0 0.75rem 1.75rem rgba($ink, 0.08);
+  }
+}
+
+.place-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.place-card__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $ink;
+}
+
+.place-card__meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: $moss-gray;
+}
+
+.place-card__description {
+  margin-bottom: 1rem;
+  color: $moss-gray;
+}
+
+.place-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}

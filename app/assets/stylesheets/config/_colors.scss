@@ -1,10 +1,26 @@
-// Define variables for your color scheme
+// Core brand colours
+$forest: #174d36;
+$deep-forest: #103728;
+$warm-cream: #f5f3ec;
+$soft-white: #fcfcf8;
+$ink: #171916;
 
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
+// Interface colours
+$moss-gray: #69716a;
+$sage-mist: #d9ded7;
+$soft-leaf: #a8d982;
+
+// Category accents
+$food-coral: #ec7964;
+$movement-blue: #93bec2;
+$wellbeing-lilac: #b5a8d1;
+$warm-gold: #ddb65b;
+
+// Bootstrap semantic aliases
+$red: $food-coral;
+$blue: $movement-blue;
+$yellow: $warm-gold;
+$orange: $food-coral;
+$green: $forest;
+$gray: $ink;
+$light-gray: $warm-cream;

@@ -1,0 +1,37 @@
+.btn {
+  font-family: $body-font;
+  font-weight: 600;
+  border-radius: $border-radius;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
+  }
+}
+
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+  color: $soft-white;
+
+  &:hover,
+  &:focus {
+    background-color: $deep-forest;
+    border-color: $deep-forest;
+    color: $soft-white;
+  }
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  border-color: $primary;
+  color: $primary;
+
+  &:hover,
+  &:focus {
+    background-color: $primary;
+    border-color: $primary;
+    color: $soft-white;
+  }
+}
