@@ -2,4 +2,7 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.26.0/mapbox-gl.css" rel="stylesheet">
 <% end %>
 
-<div id="map" data-controller="map" data-map-token-value="<%= @mapbox_token %>"></div>
+<div id="map"
+     data-controller="map"
+     data-map-token-value="<%= @mapbox_token %>"
+     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>"></div>
