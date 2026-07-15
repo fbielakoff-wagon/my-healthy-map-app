@@ -23,11 +23,11 @@ $warning: $warm-gold;
 $border-color: $sage-mist;
 
 // Buttons, cards and inputs
-$border-radius-sm: 0.5rem;
-$border-radius: 0.5rem;
-$border-radius-lg: 0.875rem;
-$border-radius-xl: 1rem;
-$border-radius-xxl: 1.25rem;
+$border-radius-sm: .125rem;   // 2px
+$border-radius:    .375rem;   // 6px
+$border-radius-lg: .5rem;     // 8px
+$border-radius-xl: .75rem;    // 12px
+$border-radius-xxl: 1rem;     // 16px
 
 // Focus accessibility
 $focus-ring-color: rgba($forest, 0.25);
