@@ -1,2 +1,17 @@
-<h1>Profiles#edit</h1>
-<p>Find me in app/views/profiles/edit.html.erb</p>
+<h1>Edit profile</h1>
+
+<h2>Preferred categories</h2>
+
+<%= form_with model: @preference,
+              url: preference_path,
+              method: :patch do |form| %>
+
+  <div>
+    <%= form.label :categories, "Choose your preferred category" %>
+    <%= form.select :categories,
+                    ["food", "fitness", "wellness"],
+                    include_blank: "Select a category" %>
+  </div>
+
+  <%= form.submit "Save preferences" %>
+<% end %>
