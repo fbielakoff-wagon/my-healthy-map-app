@@ -5,9 +5,9 @@
 <p><strong>Address:</strong> <%= @spot.address %></p>
 <p><strong>City:</strong> <%= @spot.city %></p>
 
-<% favourite = current_user.favourites.find_by(spot: @spot) if user_signed_in? %>
-
 <% if user_signed_in? %>
+  <% favourite = current_user.favourites.find_by(spot: @spot) %>
+
   <% if favourite %>
     <%= button_to "Remove from favourites",
                   spot_favourite_path(@spot, favourite),

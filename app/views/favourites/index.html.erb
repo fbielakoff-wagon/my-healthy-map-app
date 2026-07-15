@@ -1,2 +1,18 @@
-<h1>Favourites#index</h1>
-<p>Find me in app/views/favourites/index.html.erb</p>
+<h1>My favourites</h1>
+
+<% if @favourite_spots.any? %>
+  <% @favourite_spots.each do |spot| %>
+    <div>
+      <h2><%= link_to spot.name, spot_path(spot) %></h2>
+      <p><%= spot.category %> · <%= spot.city %></p>
+
+      <% favourite = current_user.favourites.find_by(spot: spot) %>
+
+      <%= button_to "Remove",
+                    spot_favourite_path(spot, favourite),
+                    method: :delete %>
+    </div>
+  <% end %>
+<% else %>
+  <p>You have not saved any favourite spots yet.</p>
+<% end %>
