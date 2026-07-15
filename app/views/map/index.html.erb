@@ -19,6 +19,12 @@
   </div>
 
   <div class="mb-3">
+    <%= link_to "All cities", map_path, class: "chip #{"chip--active" unless params[:city].present?}" %>
+    <%= link_to "📍 London", map_path(city: "London"), class: "chip #{"chip--active" if params[:city]&.casecmp?("London")}" %>
+    <%= link_to "📍 Munich", map_path(city: "Munich"), class: "chip #{"chip--active" if params[:city]&.casecmp?("Munich")}" %>
+  </div>
+
+  <div class="mb-3">
     <button type="button" class="chip chip--active" data-map-target="filterButton"
             data-action="click->map#filterByCategory" data-category="all">All</button>
     <button type="button" class="chip" data-map-target="filterButton"
