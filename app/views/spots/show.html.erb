@@ -1,2 +1,24 @@
-<h1>Spots#show</h1>
-<p>Find me in app/views/spots/show.html.erb</p>
+<h1><%= @spot.name %></h1>
+
+<p><%= @spot.description %></p>
+<p><strong>Category:</strong> <%= @spot.category %></p>
+<p><strong>Address:</strong> <%= @spot.address %></p>
+<p><strong>City:</strong> <%= @spot.city %></p>
+
+<% favourite = current_user.favourites.find_by(spot: @spot) if user_signed_in? %>
+
+<% if user_signed_in? %>
+  <% if favourite %>
+    <%= button_to "Remove from favourites",
+                  spot_favourite_path(@spot, favourite),
+                  method: :delete %>
+  <% else %>
+    <%= button_to "Add to favourites",
+                  spot_favourites_path(@spot),
+                  method: :post %>
+  <% end %>
+<% else %>
+  <%= link_to "Sign in to save this spot", new_user_session_path %>
+<% end %>
+
+<%= link_to "Back to spots", spots_path %>

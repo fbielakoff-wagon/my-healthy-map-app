@@ -8,6 +8,9 @@ class User < ApplicationRecord
   has_many :spots, dependent: :destroy
   has_many :reviews, dependent: :destroy
   has_many :favourites, dependent: :destroy
+  has_many :favourite_spots,
+            through: :favourites,
+            source: :spot
   has_many :shares, dependent: :destroy
 
   has_one :preference, dependent: :destroy
