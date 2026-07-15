@@ -6,23 +6,29 @@
 
 // General style
 $font-family-sans-serif: $body-font;
-$headings-font-family:   $headers-font;
-$body-bg:                $light-gray;
-$font-size-base:         1rem;
+$headings-font-family: $headers-font;
+$body-bg: $warm-cream;
+$body-color: $ink;
+$font-size-base: 1rem;
+$line-height-base: 1.5;
 
-// Colors
-$body-color: $gray;
-$primary:    $blue;
-$success:    $green;
-$info:       $yellow;
-$danger:     $red;
-$warning:    $orange;
+// Semantic colours
+$primary: $forest;
+$success: $forest;
+$info: $movement-blue;
+$danger: $food-coral;
+$warning: $warm-gold;
 
-// Buttons & inputs' radius
-$border-radius-sm:            .0625rem;
-$border-radius:               .125rem;
-$border-radius-lg:            .25rem;
-$border-radius-xl:            .5rem;
-$border-radius-xxl:           1rem;
+// Borders
+$border-color: $sage-mist;
 
-// Override other variables below!
+// Buttons, cards and inputs
+$border-radius-sm: 0.5rem;
+$border-radius: 0.625rem;
+$border-radius-lg: 0.875rem;
+$border-radius-xl: 1rem;
+$border-radius-xxl: 1.25rem;
+
+// Focus accessibility
+$focus-ring-color: rgba($forest, 0.25);
+$input-focus-border-color: $forest;
