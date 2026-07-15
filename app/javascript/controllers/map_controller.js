@@ -54,11 +54,29 @@ export default class extends Controller {
 
       const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([spot.longitude, spot.latitude])
-        .setPopup(new mapboxgl.Popup().setText(spot.name))
+        .setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
         .addTo(this.map)
 
       return { marker, category: spot.category }
     })
+  }
+
+  // Built via DOM methods (not setHTML with a template string) so a spot name
+  // containing markup — once spots become user-submittable — can't inject HTML.
+  buildPopup(spot) {
+    const wrapper = document.createElement("div")
+
+    const name = document.createElement("strong")
+    name.textContent = spot.name
+    wrapper.appendChild(name)
+    wrapper.appendChild(document.createElement("br"))
+
+    const link = document.createElement("a")
+    link.href = `/spots/${spot.id}`
+    link.textContent = "View details"
+    wrapper.appendChild(link)
+
+    return wrapper
   }
 
   filterByCategory(event) {
