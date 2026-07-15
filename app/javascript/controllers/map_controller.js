@@ -16,21 +16,33 @@ const CATEGORY_EMOJI = {
 }
 
 export default class extends Controller {
-  static values = { token: String, spots: Array }
-  static targets = ["mapContainer", "filterButton"]
+  static values = { token: String, spots: Array, center: Object }
+  static targets = ["mapContainer", "filterButton", "addressInput", "suggestions"]
 
   connect() {
     mapboxgl.accessToken = this.tokenValue
 
+    // A search result sets centerValue server-side — honor that over geolocation,
+    // since the user explicitly asked to look at a specific place.
+    const hasSearchCenter = this.hasCenterValue && Object.keys(this.centerValue).length > 0
+    const initialCenter = hasSearchCenter
+      ? [this.centerValue.lng, this.centerValue.lat]
+      : [-0.0778, 51.5074] // London fallback — Mapbox wants [longitude, latitude], not lat/lng
+
     this.map = new mapboxgl.Map({
       container: this.mapContainerTarget,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [-0.0778, 51.5074], // London fallback — Mapbox wants [longitude, latitude], not lat/lng
+      center: initialCenter,
       zoom: 12
     })
 
     this.addMarkers()
-    this.centerOnUserLocation()
+
+    if (hasSearchCenter) {
+      this.showSearchMarker(this.centerValue.lng, this.centerValue.lat, this.centerValue.address)
+    } else {
+      this.centerOnUserLocation()
+    }
   }
 
   addMarkers() {
@@ -60,6 +72,76 @@ export default class extends Controller {
     this.filterButtonTargets.forEach((button) => {
       button.classList.toggle("chip--active", button === event.currentTarget)
     })
+  }
+
+  // Debounce: wait for a pause in typing before hitting Mapbox, instead of
+  // firing a request on every keystroke.
+  suggestLocations() {
+    clearTimeout(this.suggestTimeout)
+    this.suggestTimeout = setTimeout(() => this.fetchSuggestions(), 300)
+  }
+
+  async fetchSuggestions() {
+    const query = this.addressInputTarget.value.trim()
+
+    if (query.length < 3) {
+      this.suggestionsTarget.innerHTML = ""
+      return
+    }
+
+    // Bias results toward where the map is currently centered, and restrict
+    // to addresses/POIs so streets surface instead of city/region names.
+    const { lng, lat } = this.map.getCenter()
+    const url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+      `${encodeURIComponent(query)}.json` +
+      `?access_token=${this.tokenValue}&autocomplete=true&limit=5&proximity=${lng},${lat}&types=address,poi`
+
+    const response = await fetch(url)
+    const data = await response.json()
+    this.renderSuggestions(data.features || [])
+  }
+
+  renderSuggestions(features) {
+    this.currentSuggestions = features
+    this.suggestionsTarget.innerHTML = ""
+
+    features.forEach((feature, index) => {
+      const button = document.createElement("button")
+      button.type = "button"
+      button.className = "list-group-item list-group-item-action"
+      button.textContent = feature.place_name // textContent, not innerHTML — never trust external content as markup
+      button.dataset.action = "click->map#selectSuggestion"
+      button.dataset.index = index
+      this.suggestionsTarget.appendChild(button)
+    })
+  }
+
+  selectSuggestion(event) {
+    const feature = this.currentSuggestions[event.currentTarget.dataset.index]
+
+    this.addressInputTarget.value = feature.place_name
+    this.suggestionsTarget.innerHTML = ""
+    this.map.flyTo({ center: feature.center, zoom: 14 })
+    this.showSearchMarker(feature.center[0], feature.center[1], feature.place_name)
+  }
+
+  hideSuggestionsSoon() {
+    // Delay clearing so a click on a suggestion (which blurs the input first) still registers.
+    setTimeout(() => { this.suggestionsTarget.innerHTML = "" }, 150)
+  }
+
+  // Drops a single pin for "the place you searched for" — distinct from the
+  // round category markers, and replaces any previous search pin rather than
+  // stacking one per search.
+  showSearchMarker(lng, lat, label) {
+    if (this.searchMarker) this.searchMarker.remove()
+
+    this.searchMarker = new mapboxgl.Marker({ color: "#dc3545" })
+      .setLngLat([lng, lat])
+
+    if (label) this.searchMarker.setPopup(new mapboxgl.Popup().setText(label))
+
+    this.searchMarker.addTo(this.map)
   }
 
   centerOnUserLocation() {

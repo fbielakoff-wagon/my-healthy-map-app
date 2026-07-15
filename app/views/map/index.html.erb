@@ -4,7 +4,19 @@
 
 <div data-controller="map"
      data-map-token-value="<%= @mapbox_token %>"
-     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>">
+     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>"
+     <% if @center %>data-map-center-value="<%= @center.to_json %>"<% end %>>
+
+  <div class="position-relative mb-3">
+    <%= form_with url: map_search_path, method: :get, class: "input-group" do %>
+      <input type="text" name="address" class="form-control" autocomplete="off"
+             data-map-target="addressInput"
+             data-action="input->map#suggestLocations blur->map#hideSuggestionsSoon"
+             placeholder="Search for a location or address" value="<%= params[:address] %>">
+      <button type="submit" class="btn btn-primary">Search</button>
+    <% end %>
+    <div class="list-group position-absolute w-100" data-map-target="suggestions"></div>
+  </div>
 
   <div class="mb-3">
     <button type="button" class="chip chip--active" data-map-target="filterButton"

@@ -3,6 +3,13 @@
   height: 500px;
 }
 
+.list-group.position-absolute {
+  top: 100%;
+  z-index: 10;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 .spot-marker {
   width: 32px;
   height: 32px;
