@@ -1,0 +1,54 @@
+.spot-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.spot-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.shadow-box {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.spot-card__emoji {
+  font-size: 48px;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #f4f7f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -60px auto 16px; // pulls it up so it sits on top of the card edge
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.spot-card__title { font-size: 28px; margin-bottom: 8px; }
+.spot-card__description { color: #666; margin-bottom: 16px; }
+
+.spot-card__category-badge {
+  display: inline-block;
+  background: #eef5ec;
+  color: #2f6b3a;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.spot-card__address, .spot-card__city { text-align: left; margin-bottom: 4px; }
+
+.spot-card__actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

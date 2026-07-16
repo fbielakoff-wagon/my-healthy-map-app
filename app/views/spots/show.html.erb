@@ -1,24 +1,24 @@
-<h1><%= @spot.name %></h1>
+<div class="spot-page">
+  <div class="spot-card shadow-box">
+    <div class="spot-card__emoji"><%= category_emoji(@spot.category) %></div>
 
-<p><%= @spot.description %></p>
-<p><strong>Category:</strong> <%= @spot.category %></p>
-<p><strong>Address:</strong> <%= @spot.address %></p>
-<p><strong>City:</strong> <%= @spot.city %></p>
+    <h1 class="spot-card__title"><%= @spot.name %></h1>
+    <p class="spot-card__description"><%= @spot.description %></p>
 
-<% if user_signed_in? %>
-  <% favourite = current_user.favourites.find_by(spot: @spot) %>
+    <span class="spot-card__category-badge">
+      <%= category_emoji(@spot.category) %> <%= @spot.category.capitalize %>
+    </span>
 
-  <% if favourite %>
-    <%= button_to "Remove from favourites",
-                  spot_favourite_path(@spot, favourite),
-                  method: :delete %>
-  <% else %>
-    <%= button_to "Add to favourites",
-                  spot_favourites_path(@spot),
-                  method: :post %>
-  <% end %>
-<% else %>
-  <%= link_to "Sign in to save this spot", new_user_session_path %>
-<% end %>
+    <p class="spot-card__address"><strong>Address:</strong> <%= @spot.address %></p>
+    <p class="spot-card__city"><strong>City:</strong> <%= @spot.city %></p>
 
-<%= link_to "Back to spots", spots_path %>
+    <div class="spot-card__actions">
+      <% if user_signed_in? %>
+        <%= button_to "Save this spot", spot_favourites_path(@spot), method: :post, class: "btn btn-primary", data: { turbo_submits_with: "Saving..." } %>
+      <% else %>
+        <%= link_to "Sign in to save this spot", new_user_session_path %>
+      <% end %>
+      <%= link_to "Back to spots", spots_path, class: "spot-card__back" %>
+    </div>
+  </div>
+</div>

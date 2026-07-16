@@ -2,14 +2,20 @@ class FavouritesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @favourite_spots = current_user.favourite_spots
+    @favourite_spots_by_category = current_user.favourites
+                                               .includes(:spot)
+                                               .map(&:spot)
+                                               .group_by(&:category)
+                                               .sort_by { |category, _spots| category }
   end
 
   def create
     @spot = Spot.find(params[:spot_id])
-    @favourite = current_user.favourites.new(spot: @spot)
+    @favourite = current_user.favourites.find_or_initialize_by(spot: @spot)
 
-    if @favourite.save
+    if @favourite.persisted?
+      redirect_to @spot, notice: "This spot is already in your favourites."
+    elsif @favourite.save
       redirect_to @spot, notice: "Spot added to your favourites."
     else
       redirect_to @spot, alert: "This spot could not be added."

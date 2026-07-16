@@ -1,0 +1,36 @@
+.favourites-page {
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.favourites-section { margin-bottom: 40px; }
+.favourites-section__title { font-size: 20px; margin-bottom: 16px; text-transform: capitalize; }
+
+.favourites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.favourite-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.favourite-card__emoji {
+  font-size: 32px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f4f7f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.favourite-card h3 { font-size: 16px; margin-bottom: 4px; }
+.favourite-card__location { color: #777; font-size: 14px; margin-bottom: 12px; }
