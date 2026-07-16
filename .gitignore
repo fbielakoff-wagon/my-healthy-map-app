@@ -36,6 +36,8 @@
 
 # Ignore .env file containing credentials.
 .env*
+# ...except the checked-in template that lists required keys with no real values.
+!.env.sample
 
 # Ignore Mac and Linux file system files
 *.swp
