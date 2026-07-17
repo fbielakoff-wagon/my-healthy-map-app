@@ -14,7 +14,15 @@
 
     <div class="spot-card__actions">
       <% if user_signed_in? %>
-        <%= button_to "Save this spot", spot_favourites_path(@spot), method: :post, class: "btn btn-primary", data: { turbo_submits_with: "Saving..." } %>
+        <% favourite = current_user.favourites.find_by(spot: @spot) %>
+
+        <% if favourite %>
+          <%= button_to "Remove from favourites", spot_favourite_path(@spot, favourite), method: :delete, class: "btn btn-outline-primary" %>
+        <% else %>
+          <%= button_to "Save this spot", spot_favourites_path(@spot), method: :post, class: "btn btn-primary", data: { turbo_submits_with: "Saving..." } %>
+        <% end %>
+
+        <%= link_to "See all my favourites", favourites_path, class: "btn btn-outline-primary" %>
       <% else %>
         <%= link_to "Sign in to save this spot", new_user_session_path %>
       <% end %>
