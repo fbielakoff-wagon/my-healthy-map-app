@@ -1,6 +1,14 @@
 <nav class="navbar navbar-expand-md navbar-lewagon">
   <div class="container-fluid">
-    <%= link_to "My Healthy Map", root_path, class: "navbar-brand" %>
+     <%= link_to root_path, class: "navbar-brand navbar-brand--logo" do %>
+      <span class="navbar-logo-square">
+  <svg class="navbar-logo-pin" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" fill="white"/>
+    <circle cx="12" cy="9" r="2.5" fill="#174d36"/>
+  </svg>
+</span>
+      <span class="navbar-logo-text">My <strong>Healthy</strong> Map</span>
+     <% end %>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
       <span class="navbar-toggler-icon"></span>
