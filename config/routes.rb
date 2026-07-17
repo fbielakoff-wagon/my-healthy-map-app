@@ -25,5 +25,13 @@ Rails.application.routes.draw do
 
   get "community", to: "community#index"
 
+  resources :health_goals do
+  resources :chats, only: [:create]
+end
+
+resources :chats, only: [:show] do
+  resources :messages, only: [:create]
+end
+
   get "up" => "rails/health#show", as: :rails_health_check
 end

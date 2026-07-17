@@ -1,0 +1,23 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>My Health Goals</h1>
+
+    <%= link_to "New health goal",
+                new_health_goal_path,
+                class: "btn btn-primary" %>
+  </div>
+
+  <% if @health_goals.any? %>
+    <div class="list-group">
+      <% @health_goals.each do |health_goal| %>
+        <%= link_to health_goal_path(health_goal),
+                    class: "list-group-item list-group-item-action" do %>
+          <h2 class="h5 mb-1"><%= health_goal.name %></h2>
+          <p class="mb-0 text-muted"><%= health_goal.module %></p>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <p>You have not created a health goal yet.</p>
+  <% end %>
+</div>

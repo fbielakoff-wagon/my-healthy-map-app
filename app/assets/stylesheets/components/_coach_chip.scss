@@ -1,0 +1,45 @@
+.coach-chip {
+  margin: 2rem 0 1.5rem;
+  text-align: center;
+}
+
+.coach-chip form {
+  display: inline-block;
+}
+
+.coach-chip__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.75rem 1.2rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #eef6ff;
+  color: #2563eb;
+
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+    transform: translateY(-1px);
+  }
+}
+
+.coach-chip__subtitle {
+  display: block;
+  margin-top: 0.4rem;
+
+  color: #6b7280;
+  font-size: 0.82rem;
+}

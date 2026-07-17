@@ -1,32 +1,89 @@
 <div class="spot-page">
   <div class="spot-card shadow-box">
-    <div class="spot-card__emoji"><%= category_emoji(@spot.category) %></div>
+    <div class="spot-card__emoji">
+      <%= category_emoji(@spot.category) %>
+    </div>
 
     <h1 class="spot-card__title"><%= @spot.name %></h1>
-    <p class="spot-card__description"><%= @spot.description %></p>
+
+    <p class="spot-card__description">
+      <%= @spot.description %>
+    </p>
 
     <span class="spot-card__category-badge">
-      <%= category_emoji(@spot.category) %> <%= @spot.category.capitalize %>
+      <%= category_emoji(@spot.category) %>
+      <%= @spot.category.capitalize %>
     </span>
 
-    <p class="spot-card__address"><strong>Address:</strong> <%= @spot.address %></p>
-    <p class="spot-card__city"><strong>City:</strong> <%= @spot.city %></p>
+    <p class="spot-card__address">
+      <strong>Address:</strong>
+      <%= @spot.address %>
+    </p>
+
+    <p class="spot-card__city">
+      <strong>City:</strong>
+      <%= @spot.city %>
+    </p>
 
     <div class="spot-card__actions">
-      <% if user_signed_in? %>
-        <% favourite = current_user.favourites.find_by(spot: @spot) %>
+  <% if user_signed_in? %>
+    <% favourite = current_user.favourites.find_by(spot: @spot) %>
 
-        <% if favourite %>
-          <%= button_to "Remove from favourites", spot_favourite_path(@spot, favourite), method: :delete, class: "btn btn-outline-primary" %>
-        <% else %>
-          <%= button_to "Save this spot", spot_favourites_path(@spot), method: :post, class: "btn btn-primary", data: { turbo_submits_with: "Saving..." } %>
-        <% end %>
+    <% if favourite %>
+      <%= button_to "Remove from favourites",
+                    spot_favourite_path(@spot, favourite),
+                    method: :delete,
+                    class: "btn btn-outline-primary" %>
+    <% else %>
+      <%= button_to "Save this spot",
+                    spot_favourites_path(@spot),
+                    method: :post,
+                    class: "btn btn-primary",
+                    data: { turbo_submits_with: "Saving..." } %>
+    <% end %>
 
-        <%= link_to "See all my favourites", favourites_path, class: "btn btn-outline-primary" %>
-      <% else %>
-        <%= link_to "Sign in to save this spot", new_user_session_path %>
+    <%= link_to "See all my favourites",
+                favourites_path,
+                class: "spot-card__secondary-link" %>
+  <% else %>
+    <%= link_to "Sign in to save this spot",
+                new_user_session_path %>
+  <% end %>
+</div>
+
+<% if user_signed_in? %>
+  <div class="coach-chip">
+    <% if current_user.health_goals.any? %>
+      <%= button_to health_goal_chats_path(current_user.health_goals.first),
+                    method: :post,
+                    params: {
+                      spot_id: @spot.id,
+                      chat: {
+                        title: @spot.name
+                      }
+                    },
+                    class: "coach-chip__button" do %>
+        ✨ How could this help me?
       <% end %>
-      <%= link_to "Back to spots", spots_path, class: "spot-card__back" %>
-    </div>
+
+      <small class="coach-chip__subtitle">
+        Advice based on your goals
+      </small>
+    <% else %>
+      <%= link_to new_health_goal_path,
+                  class: "coach-chip__button" do %>
+        ✨ How could this help me?
+      <% end %>
+
+      <small class="coach-chip__subtitle">
+        Add a goal to personalise your advice
+      </small>
+    <% end %>
+  </div>
+<% end %>
+
+<%= link_to "← Back to map",
+            root_path,
+            class: "spot-card__back" %>
   </div>
 </div>
