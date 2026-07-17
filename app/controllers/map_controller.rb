@@ -3,6 +3,16 @@ class MapController < ApplicationController
     @mapbox_token = ENV.fetch("MAPBOX_API_KEY", nil)
     @spots = Spot.all
 
+    if user_signed_in?
+      @recent_saved_spots_by_category = current_user.favourites
+                                                    .includes(:spot)
+                                                    .order(created_at: :desc)
+                                                    .limit(8)
+                                                    .map(&:spot)
+                                                    .group_by(&:category)
+                                                    .sort_by { |category, _spots| category }
+    end
+
     return if params[:city].blank?
 
     @spots = @spots.where("city ILIKE ?", params[:city])

@@ -2,38 +2,70 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.26.0/mapbox-gl.css" rel="stylesheet">
 <% end %>
 
-<div data-controller="map"
-     data-map-token-value="<%= @mapbox_token %>"
-     data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>"
-     <% if @center %>data-map-center-value="<%= @center.to_json %>"<% end %>>
-
-  <div class="position-relative mb-3">
-    <%= form_with url: map_search_path, method: :get, class: "input-group" do %>
-      <input type="text" name="address" class="form-control" autocomplete="off"
-             data-map-target="addressInput"
-             data-action="input->map#suggestLocations blur->map#hideSuggestionsSoon"
-             placeholder="Search for a location or address" value="<%= params[:address] %>">
-      <button type="submit" class="btn btn-primary">Search</button>
-    <% end %>
-    <div class="list-group position-absolute w-100" data-map-target="suggestions"></div>
+<div class="map-page">
+  <div class="map-page__hero">
+    <h1 class="map-page__heading">Find your next healthy spot</h1>
+    <p class="map-page__subheading">Food, fitness &amp; wellness near you — wherever you are in the city.</p>
   </div>
 
-  <div class="mb-3">
-    <%= link_to "All cities", map_path, class: "chip #{"chip--active" unless params[:city].present?}" %>
-    <%= link_to "📍 London", map_path(city: "London"), class: "chip #{"chip--active" if params[:city]&.casecmp?("London")}" %>
-    <%= link_to "📍 Munich", map_path(city: "Munich"), class: "chip #{"chip--active" if params[:city]&.casecmp?("Munich")}" %>
+  <div data-controller="map"
+       data-map-token-value="<%= @mapbox_token %>"
+       data-map-spots-value="<%= @spots.to_json(only: [:id, :name, :category, :latitude, :longitude, :address]) %>"
+       <% if @center %>data-map-center-value="<%= @center.to_json %>"<% end %>>
+
+    <div class="position-relative mb-3">
+      <%= form_with url: map_search_path, method: :get, class: "input-group" do %>
+        <input type="text" name="address" class="form-control" autocomplete="off"
+               data-map-target="addressInput"
+               data-action="input->map#suggestLocations blur->map#hideSuggestionsSoon"
+               placeholder="Search for a location or address" value="<%= params[:address] %>">
+        <button type="submit" class="btn btn-primary">Search</button>
+      <% end %>
+      <div class="list-group position-absolute w-100" data-map-target="suggestions"></div>
+    </div>
+
+    <div class="mb-3">
+      <%= link_to "All cities", map_path, class: "chip #{"chip--active" unless params[:city].present?}" %>
+      <%= link_to "📍 London", map_path(city: "London"), class: "chip #{"chip--active" if params[:city]&.casecmp?("London")}" %>
+      <%= link_to "📍 Munich", map_path(city: "Munich"), class: "chip #{"chip--active" if params[:city]&.casecmp?("Munich")}" %>
+    </div>
+
+    <div class="mb-3">
+      <button type="button" class="chip chip--active" data-map-target="filterButton"
+              data-action="click->map#filterByCategory" data-category="all">All</button>
+      <button type="button" class="chip" data-map-target="filterButton"
+              data-action="click->map#filterByCategory" data-category="food">🥗 Food</button>
+      <button type="button" class="chip" data-map-target="filterButton"
+              data-action="click->map#filterByCategory" data-category="fitness">💪 Fitness</button>
+      <button type="button" class="chip" data-map-target="filterButton"
+              data-action="click->map#filterByCategory" data-category="wellness">🧘 Wellness</button>
+    </div>
+
+    <div id="map" class="shadow-box" data-map-target="mapContainer"></div>
   </div>
 
-  <div class="mb-3">
-    <button type="button" class="chip chip--active" data-map-target="filterButton"
-            data-action="click->map#filterByCategory" data-category="all">All</button>
-    <button type="button" class="chip" data-map-target="filterButton"
-            data-action="click->map#filterByCategory" data-category="food">🥗 Food</button>
-    <button type="button" class="chip" data-map-target="filterButton"
-            data-action="click->map#filterByCategory" data-category="fitness">💪 Fitness</button>
-    <button type="button" class="chip" data-map-target="filterButton"
-            data-action="click->map#filterByCategory" data-category="wellness">🧘 Wellness</button>
-  </div>
+  <% if user_signed_in? && @recent_saved_spots_by_category.present? %>
+    <section class="recent-spots">
+      <h2 class="recent-spots__title">📍 My Saved Spots</h2>
 
-  <div id="map" data-map-target="mapContainer"></div>
+      <% @recent_saved_spots_by_category.each do |category, spots| %>
+        <div class="recent-spots__category">
+          <h3 class="recent-spots__category-title">
+            <%= category_emoji(category) %> <%= category.capitalize %>
+          </h3>
+
+          <div class="recent-spots__grid">
+            <% spots.each do |spot| %>
+              <%= link_to spot_path(spot), class: "recent-spot-card shadow-box" do %>
+                <div class="recent-spot-card__emoji"><%= category_emoji(spot.category) %></div>
+                <h4><%= spot.name %></h4>
+                <p><%= spot.address %></p>
+                <span class="tag"><%= spot.category %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
 </div>
