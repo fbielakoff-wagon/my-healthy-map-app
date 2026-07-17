@@ -24,6 +24,8 @@
   </head>
 
   <body>
+    <%= render "shared/navbar" %>
+
     <% flash.each do |type, message| %>
       <div class="alert alert-<%= type == "notice" ? "success" : "danger" %> mb-0 text-center" role="alert">
         <%= message %>
