@@ -1,18 +1,28 @@
-<h1>My favourites</h1>
+<div class="favourites-page">
+  <h1>My favourites</h1>
 
-<% if @favourite_spots.any? %>
-  <% @favourite_spots.each do |spot| %>
-    <div>
-      <h2><%= link_to spot.name, spot_path(spot) %></h2>
-      <p><%= spot.category %> · <%= spot.city %></p>
+  <% if @favourite_spots_by_category.any? %>
+    <% @favourite_spots_by_category.each do |category, spots| %>
+      <section class="favourites-section">
+        <h2 class="favourites-section__title">
+          <%= category_emoji(category) %> <%= category.capitalize %>
+        </h2>
 
-      <% favourite = current_user.favourites.find_by(spot: spot) %>
+        <div class="favourites-grid">
+          <% spots.each do |spot| %>
+            <% favourite = current_user.favourites.find_by(spot: spot) %>
 
-      <%= button_to "Remove",
-                    spot_favourite_path(spot, favourite),
-                    method: :delete %>
-    </div>
+            <div class="favourite-card shadow-box">
+              <div class="favourite-card__emoji"><%= category_emoji(spot.category) %></div>
+              <h3><%= link_to spot.name, spot_path(spot) %></h3>
+              <p class="favourite-card__location"><%= spot.category %> · <%= spot.city %></p>
+              <%= button_to "Remove", spot_favourite_path(spot, favourite), method: :delete, class: "btn btn-outline" %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  <% else %>
+    <p>You have not saved any favourite spots yet.</p>
   <% end %>
-<% else %>
-  <p>You have not saved any favourite spots yet.</p>
-<% end %>
+</div>
