@@ -8,14 +8,24 @@
 <% if user_signed_in? %>
   <% favourite = current_user.favourites.find_by(spot: @spot) %>
 
+ <% if user_signed_in? %>
+  <div class="mt-3">
+    <%= link_to "See all my favourites",
+        favourites_path,
+        class: "btn btn-outline-primary" %>
+  </div>
+<% end %>
+
   <% if favourite %>
     <%= button_to "Remove from favourites",
-                  spot_favourite_path(@spot, favourite),
-                  method: :delete %>
+              spot_favourite_path(@spot, favourite),
+              method: :delete,
+              class: "btn btn-outline-primary" %>
   <% else %>
     <%= button_to "Add to favourites",
-                  spot_favourites_path(@spot),
-                  method: :post %>
+              spot_favourites_path(@spot),
+              method: :post,
+              class: "btn btn-outline-primary" %>
   <% end %>
 <% else %>
   <%= link_to "Sign in to save this spot", new_user_session_path %>
