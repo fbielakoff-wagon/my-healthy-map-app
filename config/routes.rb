@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root to: "pages#home"
+  root to: "map#index"
 
   resource :profile, only: [:edit, :update]
 
