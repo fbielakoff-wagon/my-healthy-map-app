@@ -1,0 +1,23 @@
+<div class="container py-5">
+  <h1 class="mb-1"><%= @chat.title.presence || "Chat" %></h1>
+  <p class="text-muted mb-4">
+    About: <%= @chat.health_goal.name %>
+  </p>
+
+  <div class="mb-4">
+    <%= render @chat.messages.order(:created_at) %>
+  </div>
+
+  <%= form_with model: @message,
+                url: chat_messages_path(@chat) do |f| %>
+    <div class="mb-3">
+      <%= f.text_area :content,
+                value: @suggested_message,
+                class: "form-control",
+                rows: 3,
+                placeholder: "Type your message..." %>
+    </div>
+
+    <%= f.submit "Send", class: "btn btn-primary" %>
+  <% end %>
+</div>

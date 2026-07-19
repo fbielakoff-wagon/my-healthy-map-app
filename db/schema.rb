@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_13_171828) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_17_155127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "chats", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "health_goal_id", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["health_goal_id"], name: "index_chats_on_health_goal_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
+  end
 
   create_table "favourites", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -31,6 +41,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_13_171828) do
     t.index ["follower_id", "following_id"], name: "index_follows_on_follower_id_and_following_id", unique: true
     t.index ["follower_id"], name: "index_follows_on_follower_id"
     t.index ["following_id"], name: "index_follows_on_following_id"
+  end
+
+  create_table "health_goals", force: :cascade do |t|
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "module"
+    t.string "name"
+    t.text "system_prompt"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_health_goals_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
   end
 
   create_table "preferences", force: :cascade do |t|
@@ -92,10 +122,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_13_171828) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "chats", "health_goals"
+  add_foreign_key "chats", "users"
   add_foreign_key "favourites", "spots"
   add_foreign_key "favourites", "users"
   add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "follows", "users", column: "following_id"
+  add_foreign_key "health_goals", "users"
+  add_foreign_key "messages", "chats"
   add_foreign_key "preferences", "users"
   add_foreign_key "reviews", "spots"
   add_foreign_key "reviews", "users"

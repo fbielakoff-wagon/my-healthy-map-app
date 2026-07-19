@@ -207,38 +207,39 @@ puts "Categories: #{SPOTS.map { |s| s[:category] }.uniq.join(', ')}"
 
 # Ruth's test spots (from the favourites feature branch) — kept as-is
 # alongside the main seed data rather than dropped while fixing a merge conflict.
-puts "Creating users..."
+# Ruth's test spots
+puts "Creating Ruth's test data..."
 
-ruth = User.create!(
-  email: "ruth@example.com",
-  password: "password",
-  name: "Ruth"
-)
+ruth = User.find_or_create_by!(email: "ruth@example.com") do |user|
+  user.password = "password"
+  user.name = "Ruth"
+end
 
-puts "Creating spots..."
+test_spots = [
+  {
+    name: "Green Table",
+    category: "food",
+    address: "10 Test Street",
+    city: "London"
+  },
+  {
+    name: "City Strength",
+    category: "fitness",
+    address: "20 Test Road",
+    city: "London"
+  },
+  {
+    name: "Calm Studio",
+    category: "wellness",
+    address: "30 Test Lane",
+    city: "London"
+  }
+]
 
-Spot.create!(
-  name: "Green Table",
-  category: "food",
-  address: "10 Test Street",
-  city: "London",
-  user: ruth
-)
-
-Spot.create!(
-  name: "City Strength",
-  category: "fitness",
-  address: "20 Test Road",
-  city: "London",
-  user: ruth
-)
-
-Spot.create!(
-  name: "Calm Studio",
-  category: "wellness",
-  address: "30 Test Lane",
-  city: "London",
-  user: ruth
-)
+test_spots.each do |attrs|
+  Spot.find_or_create_by!(name: attrs[:name], city: attrs[:city]) do |spot|
+    spot.assign_attributes(attrs.merge(user: ruth))
+  end
+end
 
 puts "Done!"

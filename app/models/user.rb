@@ -32,4 +32,8 @@ class User < ApplicationRecord
   has_many :followers,
            through: :passive_follows,
            source: :follower
+
+  has_many :chats, dependent: :destroy
+  has_many :health_goals, dependent: :destroy
+  has_many :chats, dependent: :destroy
 end

@@ -74,3 +74,5 @@ end
 
 gem "devise", "~> 5.0"
 gem "geocoder"
+
+gem "ruby_llm", "~> 1.2.0"
