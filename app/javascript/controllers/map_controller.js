@@ -57,7 +57,7 @@ export default class extends Controller {
         .setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
         .addTo(this.map)
 
-      return { marker, category: spot.category }
+      return { marker, category: spot.category, id: spot.id }
     })
   }
 
@@ -107,6 +107,29 @@ export default class extends Controller {
       return
     }
 
+    // Our own spots first — exact matches from data we actually have, no
+    // network request needed since spotsValue is already loaded on the page.
+    const spotMatches = this.matchingSpots(query)
+    const addressMatches = await this.fetchAddressSuggestions(query)
+
+    this.renderSuggestions([...spotMatches, ...addressMatches])
+  }
+
+  matchingSpots(query) {
+    const lowerQuery = query.toLowerCase()
+
+    return this.spotsValue
+      .filter((spot) => spot.name.toLowerCase().includes(lowerQuery))
+      .map((spot) => ({
+        type: "spot",
+        label: spot.name,
+        emoji: CATEGORY_EMOJI[spot.category] || "📍",
+        lngLat: [spot.longitude, spot.latitude],
+        spotId: spot.id
+      }))
+  }
+
+  async fetchAddressSuggestions(query) {
     // Bias results toward where the map is currently centered, and restrict
     // to addresses/POIs so streets surface instead of city/region names.
     const { lng, lat } = this.map.getCenter()
@@ -116,18 +139,24 @@ export default class extends Controller {
 
     const response = await fetch(url)
     const data = await response.json()
-    this.renderSuggestions(data.features || [])
+
+    return (data.features || []).map((feature) => ({
+      type: "address",
+      label: feature.place_name,
+      emoji: "📍",
+      lngLat: feature.center
+    }))
   }
 
-  renderSuggestions(features) {
-    this.currentSuggestions = features
+  renderSuggestions(suggestions) {
+    this.currentSuggestions = suggestions
     this.suggestionsTarget.innerHTML = ""
 
-    features.forEach((feature, index) => {
+    suggestions.forEach((suggestion, index) => {
       const button = document.createElement("button")
       button.type = "button"
       button.className = "list-group-item list-group-item-action"
-      button.textContent = feature.place_name // textContent, not innerHTML — never trust external content as markup
+      button.textContent = `${suggestion.emoji} ${suggestion.label}` // textContent, not innerHTML — never trust external content as markup
       button.dataset.action = "click->map#selectSuggestion"
       button.dataset.index = index
       this.suggestionsTarget.appendChild(button)
@@ -135,12 +164,28 @@ export default class extends Controller {
   }
 
   selectSuggestion(event) {
-    const feature = this.currentSuggestions[event.currentTarget.dataset.index]
+    const suggestion = this.currentSuggestions[event.currentTarget.dataset.index]
 
-    this.addressInputTarget.value = feature.place_name
+    this.addressInputTarget.value = suggestion.label
     this.suggestionsTarget.innerHTML = ""
-    this.map.flyTo({ center: feature.center, zoom: 14 })
-    this.showSearchMarker(feature.center[0], feature.center[1], feature.place_name)
+    this.map.flyTo({ center: suggestion.lngLat, zoom: 15 })
+
+    if (suggestion.type === "spot") {
+      // The matching marker might be hidden by the category filter — reset
+      // to "All" so the spot the user just searched for is actually visible.
+      this.resetCategoryFilter()
+      const match = this.markers.find(({ id }) => id === suggestion.spotId)
+      if (match) match.marker.togglePopup()
+    } else {
+      this.showSearchMarker(suggestion.lngLat[0], suggestion.lngLat[1], suggestion.label)
+    }
+  }
+
+  resetCategoryFilter() {
+    this.markers.forEach(({ marker }) => { marker.getElement().style.display = "" })
+    this.filterButtonTargets.forEach((button) => {
+      button.classList.toggle("chip--active", button.dataset.category === "all")
+    })
   }
 
   hideSuggestionsSoon() {
