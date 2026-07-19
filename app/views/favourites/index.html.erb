@@ -15,7 +15,7 @@
             <div class="favourite-card shadow-box">
               <div class="favourite-card__emoji"><%= category_emoji(spot.category) %></div>
               <h3><%= link_to spot.name, spot_path(spot) %></h3>
-              <p class="favourite-card__location"><%= spot.category %> · <%= spot.city %></p>
+              <p class="favourite-card__location"><%= spot.category.capitalize %> · <%= spot.city %></p>
               <%= button_to "Remove", spot_favourite_path(spot, favourite), method: :delete, class: "btn btn-outline" %>
             </div>
           <% end %>
