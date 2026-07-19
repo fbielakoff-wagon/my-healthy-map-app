@@ -1,17 +1,47 @@
-<h1>Edit profile</h1>
+<div class="profile-page">
+  <h1 class="profile-page__title">My profile</h1>
 
-<h2>Preferred categories</h2>
+  <div class="profile-card">
+    <h2 class="profile-card__heading">Your details</h2>
 
-<%= form_with model: @preference,
-              url: preference_path,
-              method: :patch do |form| %>
+    <div class="profile-avatar-row">
+      <div class="profile-avatar">
+        <div class="profile-avatar__placeholder">
+  <svg class="profile-avatar__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="8" r="4" fill="white"/>
+    <path d="M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
+      </div>
+    </div>
 
-  <div>
-    <%= form.label :categories, "Choose your preferred category" %>
-    <%= form.select :categories,
-                    ["food", "fitness", "wellness"],
-                    include_blank: "Select a category" %>
+    <%= form_with model: current_user, url: profile_path, method: :patch, local: true do |form| %>
+      <div class="profile-field">
+        <%= form.label :name, "Name" %>
+        <%= form.text_field :name, class: "form-control" %>
+      </div>
+
+      <div class="profile-field">
+        <%= form.label :city, "City" %>
+        <%= form.select :city, ["London", "Munich", "Paris"], include_blank: "Select your city", class: "form-select" %>
+      </div>
+
+      <%= form.submit "Save profile", class: "btn btn-primary" %>
+    <% end %>
   </div>
 
-  <%= form.submit "Save preferences" %>
-<% end %>
+  <div class="profile-divider"></div>
+
+  <div class="profile-card">
+    <h2 class="profile-card__heading">Preferred categories</h2>
+
+    <%= form_with model: @preference, url: preference_path, method: :patch, local: true do |form| %>
+      <div class="profile-field">
+        <%= form.label :categories, "Choose your preferred category" %>
+        <%= form.select :categories, ["food", "fitness", "wellness"], include_blank: "Select a category", class: "form-select" %>
+      </div>
+
+      <%= form.submit "Save preferences", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
