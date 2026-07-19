@@ -1,0 +1,108 @@
+.welcome-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+
+  background: rgba($ink, 0.45);
+  backdrop-filter: blur(2px);
+
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.is-leaving {
+    opacity: 0;
+  }
+}
+
+.welcome-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: $soft-white;
+  border: 1px solid $sage-mist;
+  border-radius: 20px;
+  padding: 40px 32px 32px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba($ink, 0.18);
+
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.25s ease;
+
+  .welcome-modal-overlay.is-visible & {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.welcome-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: $warm-cream;
+  color: $moss-gray;
+  border-radius: 50%;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: $sage-mist;
+    color: $ink;
+  }
+}
+
+.welcome-modal__icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  background: $forest;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.welcome-modal__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: $ink;
+  margin-bottom: 12px;
+}
+
+.welcome-modal__body {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: $moss-gray;
+  margin-bottom: 28px;
+}
+
+.welcome-modal__actions .btn-primary {
+  background: $forest;
+  border-color: $forest;
+  padding: 10px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+
+  &:hover {
+    background: $deep-forest;
+    border-color: $deep-forest;
+  }
+}

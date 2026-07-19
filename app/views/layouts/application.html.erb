@@ -25,6 +25,7 @@
 
   <body>
     <%= render "shared/navbar" %>
+    <%= render "shared/welcome_modal" if @show_welcome_modal %>
 
     <% flash.each do |type, message| %>
       <div class="alert alert-<%= type == "notice" ? "success" : "danger" %> mb-0 text-center" role="alert">

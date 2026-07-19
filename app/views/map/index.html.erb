@@ -28,6 +28,7 @@
       <%= link_to "All cities", map_path, class: "chip #{"chip--active" unless params[:city].present?}" %>
       <%= link_to "📍 London", map_path(city: "London"), class: "chip #{"chip--active" if params[:city]&.casecmp?("London")}" %>
       <%= link_to "📍 Munich", map_path(city: "Munich"), class: "chip #{"chip--active" if params[:city]&.casecmp?("Munich")}" %>
+      <%= link_to "📍 Paris", map_path(city: "Paris"), class: "chip #{"chip--active" if params[:city]&.casecmp?("Paris")}" %>
     </div>
 
     <div class="mb-3">
