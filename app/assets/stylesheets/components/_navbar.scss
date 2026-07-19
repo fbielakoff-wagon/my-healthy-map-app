@@ -54,6 +54,9 @@
   font-weight: 500;
   color: #333;
   margin: 0 4px;
+  display: flex;
+  align-items: center;
+  height: 100%;
 
   &:hover {
     color: $green;
