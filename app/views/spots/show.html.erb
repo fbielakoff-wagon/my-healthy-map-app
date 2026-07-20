@@ -1,17 +1,63 @@
 <div class="spot-page">
   <div class="spot-card shadow-box">
+    <% if user_signed_in? %>
+  <% favourite = current_user.favourites.find_by(spot: @spot) %>
+  <% shared_by = current_user.email.split("@").first %>
+  <% share_url = spot_url(@spot, shared_by: shared_by) %>
+
+  <div class="spot-card__controls">
+    <% if favourite %>
+      <%= link_to spot_favourite_path(@spot, favourite),
+                  data: { turbo_method: :delete },
+                  class: "spot-card__control is-favourited",
+                  aria: { label: "Remove from favourites" },
+                  title: "Remove from favourites" do %>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.3l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path>
+        </svg>
+      <% end %>
+    <% else %>
+      <%= link_to spot_favourites_path(@spot),
+                  data: { turbo_method: :post },
+                  class: "spot-card__control",
+                  aria: { label: "Save to favourites" },
+                  title: "Save to favourites" do %>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.3l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path>
+        </svg>
+      <% end %>
+    <% end %>
+
+    <a href="#"
+       class="spot-card__control"
+       aria-label="Share this spot"
+       title="Share this spot"
+       data-controller="clipboard"
+       data-clipboard-text-value="<%= share_url %>"
+       data-action="click->clipboard#copy">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line>
+        <line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line>
+      </svg>
+    </a>
+  </div>
+<% end %>
+
     <div class="spot-card__emoji">
       <%= category_emoji(@spot.category) %>
     </div>
 
     <h1 class="spot-card__title"><%= @spot.name %></h1>
 
-<% if params[:shared_by].present? %>
-  <div class="share-banner">
-    <strong><%= params[:shared_by] %></strong>
-    thought you’d like this spot 💚
-  </div>
-<% end %>
+    <% if params[:shared_by].present? %>
+      <div class="share-banner">
+        <strong><%= params[:shared_by] %></strong>
+        thought you’d like this spot 💚
+      </div>
+    <% end %>
 
     <p class="spot-card__description">
       <%= @spot.description %>
@@ -22,75 +68,49 @@
       <%= @spot.category.capitalize %>
     </span>
 
-    <p class="spot-card__address">
-      <strong>Address:</strong>
-      <%= @spot.address %>
+    <p class="spot-card__location">
+      📍 <%= @spot.address %>
     </p>
 
-    <p class="spot-card__city">
-      <strong>City:</strong>
-      <%= @spot.city %>
-    </p>
-
-    <div class="spot-card__actions">
-  <% if user_signed_in? %>
-    <% favourite = current_user.favourites.find_by(spot: @spot) %>
-
-    <% if favourite %>
-      <%= button_to "Remove from favourites",
-                    spot_favourite_path(@spot, favourite),
-                    method: :delete,
-                    class: "btn btn-outline-primary" %>
-    <% else %>
-      <%= button_to "Save this spot",
-                    spot_favourites_path(@spot),
-                    method: :post,
-                    class: "btn btn-primary",
-                    data: { turbo_submits_with: "Saving..." } %>
+    <% unless user_signed_in? %>
+      <%= link_to "Sign in to save this spot",
+                  new_user_session_path,
+                  class: "spot-card__secondary-link" %>
     <% end %>
 
-    <%= link_to "See all my favourites",
-                favourites_path,
-                class: "spot-card__secondary-link" %>
-  <% else %>
-    <%= link_to "Sign in to save this spot",
-                new_user_session_path %>
-  <% end %>
-</div>
+    <% if user_signed_in? %>
+      <div class="coach-chip">
+        <% if current_user.health_goals.any? %>
+          <%= button_to health_goal_chats_path(current_user.health_goals.first),
+                        method: :post,
+                        params: {
+                          spot_id: @spot.id,
+                          chat: {
+                            title: @spot.name
+                          }
+                        },
+                        class: "coach-chip__button" do %>
+            ✨ How could this help me?
+          <% end %>
 
-<% if user_signed_in? %>
-  <div class="coach-chip">
-    <% if current_user.health_goals.any? %>
-      <%= button_to health_goal_chats_path(current_user.health_goals.first),
-                    method: :post,
-                    params: {
-                      spot_id: @spot.id,
-                      chat: {
-                        title: @spot.name
-                      }
-                    },
-                    class: "coach-chip__button" do %>
-        ✨ How could this help me?
-      <% end %>
+          <small class="coach-chip__subtitle">
+            Advice based on your goals
+          </small>
+        <% else %>
+          <%= link_to new_health_goal_path,
+                      class: "coach-chip__button" do %>
+            ✨ How could this help me?
+          <% end %>
 
-      <small class="coach-chip__subtitle">
-        Advice based on your goals
-      </small>
-    <% else %>
-      <%= link_to new_health_goal_path,
-                  class: "coach-chip__button" do %>
-        ✨ How could this help me?
-      <% end %>
-
-      <small class="coach-chip__subtitle">
-        Add a goal to personalise your advice
-      </small>
+          <small class="coach-chip__subtitle">
+            Add a goal to personalise your advice
+          </small>
+        <% end %>
+      </div>
     <% end %>
-  </div>
-<% end %>
 
-<%= link_to "← Back to map",
-            root_path,
-            class: "spot-card__back" %>
+    <%= link_to "Back to map",
+                root_path,
+                class: "spot-card__back" %>
   </div>
 </div>

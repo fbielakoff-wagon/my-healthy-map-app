@@ -1,29 +1,81 @@
-.spot-card__actions {
+.spot-card {
+  position: relative;
+}
+
+.spot-card__controls {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 50;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  gap: 0.5rem;
+
+  width: fit-content;
+  height: fit-content;
 }
 
-.spot-card__secondary-link {
+.spot-card__control {
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 42px;
+
+  width: 42px;
+  height: 42px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid rgba(21, 91, 61, 0.18);
+  border-radius: 50%;
+
+  background: #f4f8f5;
   color: #155b3d;
-  font-weight: 600;
   text-decoration: none;
 
+  overflow: hidden;
+  cursor: pointer;
+
   &:hover {
-    text-decoration: underline;
+    background: #e8f1eb;
+    color: #155b3d;
+    text-decoration: none;
   }
 }
 
-.spot-card__back {
-  display: inline-block;
-  margin-top: 1.5rem;
-  color: #155b3d;
-  font-size: 0.9rem;
-  text-decoration: none;
+.spot-card__controls > .spot-card__control > svg {
+  box-sizing: border-box;
 
-  &:hover {
-    text-decoration: underline;
-  }
+  display: block;
+
+  flex: 0 0 20px;
+
+  width: 20px !important;
+  height: 20px !important;
+
+  max-width: 20px !important;
+  max-height: 20px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.spot-card__control.is-favourited {
+  color: #b4233c;
+}
+
+.spot-card__control.is-favourited > svg {
+  fill: currentColor;
+  stroke: currentColor;
 }
