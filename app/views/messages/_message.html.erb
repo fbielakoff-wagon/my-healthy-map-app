@@ -1,7 +1,19 @@
-<div class="mb-3 <%= message.role == 'user' ? 'text-end' : 'text-start' %>">
-  <span class="badge <%= message.role == 'user' ? 'bg-primary' : 'bg-secondary' %> mb-1">
-    <%= message.role.capitalize %>
-  </span>
+<div class="coach-message <%= message.role == 'user' ? 'coach-message--user' : 'coach-message--assistant' %>">
+  <% if message.role == 'assistant' %>
+    <div class="coach-message__author">
+      <span class="coach-badge">
+        <svg class="coach-badge__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/>
+        </svg>
+      </span>
+      <div>
+        <div class="coach-message__name">Healthy Coach</div>
+        <div class="coach-message__role">AI coaching assistant</div>
+      </div>
+    </div>
+  <% else %>
+    <div class="coach-message__label">You</div>
+  <% end %>
 
-  <p class="mb-0"><%= message.content %></p>
+  <p class="coach-message__content"><%= message.content %></p>
 </div>

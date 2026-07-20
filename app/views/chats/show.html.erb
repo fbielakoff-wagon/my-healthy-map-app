@@ -4,7 +4,7 @@
     About: <%= @chat.health_goal.name %>
   </p>
 
-  <div class="mb-4">
+  <div class="coach-card mb-4">
     <%= render @chat.messages.order(:created_at) %>
   </div>
 
@@ -18,6 +18,6 @@
                 placeholder: "Type your message..." %>
     </div>
 
-    <%= f.submit "Send", class: "btn btn-primary" %>
+    <%= f.submit "Send", class: "btn-coach-send" %>
   <% end %>
 </div>
