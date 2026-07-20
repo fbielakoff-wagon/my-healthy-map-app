@@ -29,7 +29,7 @@ class HealthGoalsController < ApplicationController
     PROMPT
 
     if @health_goal.save
-      redirect_to health_goal_path(@health_goal)
+      redirect_to coach_path, notice: "Health goal created."
     else
       render :new, status: :unprocessable_entity
     end
@@ -41,7 +41,7 @@ class HealthGoalsController < ApplicationController
   def update
     if @health_goal.update(health_goal_params)
       @health_goal.update(system_prompt: build_system_prompt(@health_goal))
-      redirect_to health_goal_path(@health_goal)
+      redirect_to coach_path, notice: "Health goal updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -49,7 +49,7 @@ class HealthGoalsController < ApplicationController
 
   def destroy
     @health_goal.destroy
-    redirect_to health_goals_path
+    redirect_to coach_path, notice: "Health goal removed."
   end
 
   private

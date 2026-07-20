@@ -4,6 +4,7 @@ class Spot < ApplicationRecord
   has_many :reviews, dependent: :destroy
   has_many :favourites, dependent: :destroy
   has_many :shares, dependent: :destroy
+  has_many :chats, dependent: :nullify
 
   CATEGORIES = %w[food wellness fitness].freeze
 

@@ -1,0 +1,26 @@
+<div class="container py-5">
+  <h1 class="mb-4">Edit Health Goal</h1>
+
+  <%= form_with model: @health_goal do |f| %>
+    <div class="mb-3">
+      <%= f.label :name, "What would you like help with?", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :module, "Category", class: "form-label" %>
+      <%= f.text_field :module, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :content, "Is there anything your coach should know?", class: "form-label" %>
+      <%= f.text_area :content, class: "form-control", rows: 5 %>
+    </div>
+
+    <%= f.submit "Update Health Goal", class: "btn btn-primary" %>
+
+    <%= link_to "Cancel",
+                coach_path,
+                class: "btn btn-outline-secondary ms-2" %>
+  <% end %>
+</div>

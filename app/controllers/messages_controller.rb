@@ -58,22 +58,50 @@ class MessagesController < ApplicationController
         "No favourite spots saved."
       end
 
+      current_spot_text =
+  if @chat.spot.present?
+    spot = @chat.spot
+
+    <<~SPOT
+      Name: #{spot.name}
+      Category: #{spot.category}
+      Description: #{spot.description}
+      Address: #{spot.address}
+      City: #{spot.city}
+    SPOT
+  else
+    "This conversation was not started from a particular spot."
+  end
+
     <<~PROMPT
-      #{@chat.health_goal.system_prompt}
+  #{@chat.health_goal.system_prompt}
 
-      Additional information from My Healthy Map:
+  Additional information from My Healthy Map:
 
-      Preferred categories:
-      #{preferred_categories}
+  The user's current health goal:
+  #{@chat.health_goal.name}
 
-      Favourite places:
-      #{favourites_text}
+  Preferred categories:
+  #{preferred_categories}
 
-      Use this information when it is relevant to the user's goal.
+  Favourite places:
+  #{favourites_text}
 
-      Do not invent information about places, services or the user.
-      If the available information is insufficient, ask a concise clarifying question.
-    PROMPT
+  Current spot being discussed:
+  #{current_spot_text}
+
+  When a current spot is provided, directly explain how it could support the
+  user's health goal. Give practical, realistic suggestions based only on the
+  supplied information.
+
+  Keep the response supportive, concise and actionable.
+
+  Do not invent opening hours, facilities, prices, accessibility information,
+  services or other facts that have not been provided.
+
+  If essential information is missing, say what is unknown or ask one concise
+  clarifying question.
+PROMPT
   end
 
   def maybe_generate_chat_title

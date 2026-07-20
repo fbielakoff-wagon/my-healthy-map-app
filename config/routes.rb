@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+  get "coach/index"
   devise_for :users
 
   root to: "map#index"
 
   resource :profile, only: [:edit, :update]
 
+  get "coach", to: "coach#index", as: :coach
   get "map", to: "map#index"
   get "map/search", to: "map#search"
 
@@ -34,4 +36,5 @@ resources :chats, only: [:show] do
 end
 
   get "up" => "rails/health#show", as: :rails_health_check
+
 end
