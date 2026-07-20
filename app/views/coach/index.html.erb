@@ -1,0 +1,84 @@
+<div class="coach-page">
+  <div class="coach-page__content">
+    <header class="coach-intro">
+      <h1 class="coach-intro__title">My Coach</h1>
+
+      <p class="coach-intro__text">
+        Get personalised support based on your goals and favourite places.
+      </p>
+
+      <% if @active_goal.present? %>
+        <%= button_to "Start a conversation",
+                      health_goal_chats_path(@active_goal),
+                      method: :post,
+                      params: {
+                        chat: {
+                          title: "General coaching"
+                        }
+                      },
+                      class: "coach-intro__button" %>
+      <% else %>
+        <%= link_to "Set your first goal",
+                    new_health_goal_path,
+                    class: "coach-intro__button" %>
+      <% end %>
+    </header>
+
+    <section class="coach-section">
+      <h2>Recent conversations</h2>
+
+      <% if @recent_chats.any? %>
+        <div class="coach-list">
+          <% @recent_chats.each do |chat| %>
+            <%= link_to chat_path(chat),
+                        class: "coach-list__item" do %>
+              <strong>
+                <%= chat.title.presence || chat.health_goal.name %>
+              </strong>
+
+              <% if chat.spot.present? %>
+                <span>📍 <%= chat.spot.name %></span>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="coach-section__empty">No conversations yet.</p>
+      <% end %>
+    </section>
+
+    <section class="coach-section">
+      <div class="coach-section__heading">
+        <h2>Health goals</h2>
+
+        <%= link_to "Add goal",
+                    new_health_goal_path,
+                    class: "coach-section__link" %>
+      </div>
+
+      <% if @health_goals.any? %>
+        <div class="coach-list">
+          <% @health_goals.each do |goal| %>
+            <div class="coach-list__item coach-list__item--static">
+              <div>
+                <strong><%= goal.name %></strong>
+
+                <% if goal.module.present? %>
+                  <span><%= goal.module %></span>
+                <% end %>
+              </div>
+
+              <%= link_to "Edit",
+                          edit_health_goal_path(goal),
+                          class: "coach-list__edit" %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="coach-section__empty">
+          You haven't created any health goals yet.
+        </p>
+      <% end %>
+    </section>
+  </div>
+</div>
