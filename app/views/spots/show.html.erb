@@ -6,6 +6,13 @@
 
     <h1 class="spot-card__title"><%= @spot.name %></h1>
 
+<% if params[:shared_by].present? %>
+  <div class="share-banner">
+    <strong><%= params[:shared_by] %></strong>
+    thought you’d like this spot 💚
+  </div>
+<% end %>
+
     <p class="spot-card__description">
       <%= @spot.description %>
     </p>
