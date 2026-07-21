@@ -96,3 +96,90 @@
     margin-bottom: 40px;
   }
 }
+
+.coach-card {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.coach-message {
+  padding: 4px 0 16px;
+}
+
+.coach-message + .coach-message {
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+.coach-message__author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.coach-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.coach-badge__icon {
+  width: 18px;
+  height: 18px;
+}
+
+.coach-message__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.coach-message__role {
+  font-size: 0.78rem;
+  color: $gray;
+}
+
+.coach-message__label {
+  margin-bottom: 6px;
+  padding-top: 2px;
+  color: $gray;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.coach-message__content {
+  margin: 0;
+  color: #111827;
+  line-height: 1.5;
+}
+
+.btn-coach-send {
+  display: inline-block;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 8px;
+  background: #ea580c;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #c2410c;
+    color: #fff;
+  }
+}
