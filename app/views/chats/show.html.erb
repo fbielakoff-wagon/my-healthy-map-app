@@ -4,20 +4,22 @@
     About: <%= @chat.health_goal.name %>
   </p>
 
-  <div class="coach-card mb-4">
-    <%= render @chat.messages.order(:created_at) %>
-  </div>
-
-  <%= form_with model: @message,
-                url: chat_messages_path(@chat) do |f| %>
-    <div class="mb-3">
-      <%= f.text_area :content,
-                value: @suggested_message,
-                class: "form-control",
-                rows: 3,
-                placeholder: "Type your message..." %>
+  <%= turbo_frame_tag "chat_widget" do %>
+    <div class="coach-card mb-4">
+      <%= render @chat.messages.order(:created_at) %>
     </div>
 
-    <%= f.submit "Send", class: "btn-coach-send" %>
+    <%= form_with model: @message,
+                  url: chat_messages_path(@chat) do |f| %>
+      <div class="mb-3">
+        <%= f.text_area :content,
+                  value: @suggested_message,
+                  class: "form-control",
+                  rows: 3,
+                  placeholder: "Type your message..." %>
+      </div>
+
+      <%= f.submit "Send", class: "btn-coach-send" %>
+    <% end %>
   <% end %>
 </div>

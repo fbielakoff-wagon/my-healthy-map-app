@@ -1,0 +1,43 @@
+<% if user_signed_in? %>
+  <div class="chat-widget" data-controller="chat-widget">
+    <button class="chat-widget__toggle" data-action="chat-widget#toggle" aria-label="Open coach chat">
+      💬
+    </button>
+
+    <div class="chat-widget__panel" data-chat-widget-target="panel">
+      <div class="chat-widget__header">
+        <span>My Coach</span>
+        <button class="chat-widget__close" data-action="chat-widget#toggle" aria-label="Close">&times;</button>
+      </div>
+
+      <div class="chat-widget__body">
+        <%= turbo_frame_tag "chat_widget" do %>
+          <% active_goal = current_user.health_goals.order(created_at: :desc).first %>
+
+          <% if active_goal %>
+            <%= button_to "Start a conversation",
+                          health_goal_chats_path(active_goal),
+                          method: :post,
+                          params: { chat: { title: "General coaching" } },
+                          class: "coach-intro__button" %>
+          <% else %>
+            <p>Set a health goal first to start chatting.</p>
+            <%= link_to "Set a goal", new_health_goal_path, class: "coach-intro__button" %>
+          <% end %>
+
+          <% recent_chats = current_user.chats.order(updated_at: :desc).limit(5) %>
+          <% if recent_chats.any? %>
+            <div class="chat-widget__recent">
+              <p class="chat-widget__recent-label">Recent</p>
+              <% recent_chats.each do |chat| %>
+                <%= link_to (chat.title.presence || chat.health_goal.name),
+                            chat_path(chat),
+                            class: "chat-widget__recent-item" %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

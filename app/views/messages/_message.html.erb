@@ -15,5 +15,7 @@
     <div class="coach-message__label">You</div>
   <% end %>
 
-  <p class="coach-message__content"><%= message.content %></p>
+  <div class="coach-message__content">
+    <%= render_markdown(message.content) %>
+  </div>
 </div>
