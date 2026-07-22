@@ -4,6 +4,19 @@ body {
   line-height: 1.6;
   color: $ink;
   background-color: $warm-cream;
+
+  background-image:
+    linear-gradient(
+      rgba($forest, 0.015) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba($forest, 0.015) 1px,
+      transparent 1px
+    );
+
+  background-size: 24px 24px;
 }
 
 h1,
