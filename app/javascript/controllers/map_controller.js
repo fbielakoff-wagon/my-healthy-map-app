@@ -63,21 +63,29 @@ export default class extends Controller {
 
   // Built via DOM methods (not setHTML with a template string) so a spot name
   // containing markup — once spots become user-submittable — can't inject HTML.
-  buildPopup(spot) {
-    const wrapper = document.createElement("div")
+buildPopup(spot) {
+  const wrapper = document.createElement("div")
+  wrapper.className = "spot-popup"
 
-    const name = document.createElement("strong")
-    name.textContent = spot.name
-    wrapper.appendChild(name)
-    wrapper.appendChild(document.createElement("br"))
+  const emoji = document.createElement("div")
+  emoji.className = "spot-popup__emoji"
+  emoji.textContent = CATEGORY_EMOJI[spot.category] || "📍"
 
-    const link = document.createElement("a")
-    link.href = `/spots/${spot.id}`
-    link.textContent = "View details"
-    wrapper.appendChild(link)
+  const name = document.createElement("h3")
+  name.className = "spot-popup__title"
+  name.textContent = spot.name
 
-    return wrapper
-  }
+  const link = document.createElement("a")
+  link.className = "spot-popup__link"
+  link.href = `/spots/${spot.id}`
+  link.textContent = "View spot →"
+
+  wrapper.appendChild(emoji)
+  wrapper.appendChild(name)
+  wrapper.appendChild(link)
+
+  return wrapper
+}
 
   filterByCategory(event) {
     const category = event.currentTarget.dataset.category
