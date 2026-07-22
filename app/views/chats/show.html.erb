@@ -4,6 +4,27 @@
     About: <%= @chat.health_goal.name %>
   </p>
 
+  <div class="chat-goal-selector">
+  <%= form_with model: @chat,
+                method: :patch,
+                class: "chat-goal-selector__form" do |form| %>
+
+    <%= form.label :health_goal_id,
+                   "Which goal is this about?",
+                   class: "chat-goal-selector__label" %>
+
+    <%= form.collection_select :health_goal_id,
+                               current_user.health_goals,
+                               :id,
+                               :name,
+                               {},
+                               {
+                                 class: "chat-goal-selector__select",
+                                 onchange: "this.form.requestSubmit()"
+                               } %>
+  <% end %>
+</div>
+
   <%= turbo_frame_tag "chat_widget" do %>
     <div class="coach-card mb-4">
       <%= render @chat.messages.order(:created_at) %>

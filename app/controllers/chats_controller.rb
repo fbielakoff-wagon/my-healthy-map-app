@@ -28,6 +28,20 @@ class ChatsController < ApplicationController
     end
   end
 
+  def update
+  @chat = current_user.chats.find(params[:id])
+  @health_goal = current_user.health_goals.find(
+    params.require(:chat).fetch(:health_goal_id)
+  )
+
+  if @chat.update(health_goal: @health_goal)
+    redirect_to chat_path(@chat)
+  else
+    redirect_to chat_path(@chat),
+                alert: "Could not change the goal."
+  end
+end
+
   private
 
   def chat_params
