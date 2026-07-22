@@ -38,7 +38,10 @@
     <%= form_with model: @preference, url: preference_path, method: :patch, local: true do |form| %>
       <div class="profile-field">
         <%= form.label :categories, "Choose your preferred category" %>
-        <%= form.select :categories, ["food", "fitness", "wellness"], include_blank: "Select a category", class: "form-select" %>
+        <%= form.select :categories,
+                [["Food", "food"], ["Fitness", "fitness"], ["Wellness", "wellness"]],
+                include_blank: "Select a category",
+                class: "form-select" %>
       </div>
 
       <%= form.submit "Save preferences", class: "btn btn-primary" %>
