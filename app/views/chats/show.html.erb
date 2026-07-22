@@ -1,46 +1,91 @@
-<div class="container py-5">
-  <h1 class="mb-1"><%= @chat.title.presence || "Chat" %></h1>
-  <p class="text-muted mb-4">
-    About: <%= @chat.health_goal.name %>
-  </p>
+<div class="coach-page">
+  <div class="coach-page__content">
+    <div class="coach-intro">
+      <h1 class="coach-intro__title">
+        <%= @chat.title.presence || "Chat" %>
+      </h1>
 
-  <div class="chat-goal-selector">
-  <%= form_with model: @chat,
-                method: :patch,
-                class: "chat-goal-selector__form" do |form| %>
-
-    <%= form.label :health_goal_id,
-                   "Which goal is this about?",
-                   class: "chat-goal-selector__label" %>
-
-    <%= form.collection_select :health_goal_id,
-                               current_user.health_goals,
-                               :id,
-                               :name,
-                               {},
-                               {
-                                 class: "chat-goal-selector__select",
-                                 onchange: "this.form.requestSubmit()"
-                               } %>
-  <% end %>
-</div>
-
-  <%= turbo_frame_tag "chat_widget" do %>
-    <div class="coach-card mb-4">
-      <%= render @chat.messages.order(:created_at) %>
+      <p class="coach-intro__text">
+        <% if @chat.health_goal.present? %>
+          About: <%= @chat.health_goal.name %>
+        <% else %>
+          General conversation
+        <% end %>
+      </p>
     </div>
 
-    <%= form_with model: @message,
-                  url: chat_messages_path(@chat) do |f| %>
-      <div class="mb-3">
-        <%= f.text_area :content,
-                  value: @suggested_message,
-                  class: "form-control",
-                  rows: 3,
-                  placeholder: "Type your message..." %>
-      </div>
+    <% if current_user.health_goals.any? %>
+      <div class="chat-goal-selector">
+        <%= form_with model: @chat,
+                      method: :patch,
+                      class: "chat-goal-selector__form" do |form| %>
 
-      <%= f.submit "Send", class: "btn-coach-send" %>
+          <%= form.label :health_goal_id,
+                         "Which goal is this about?",
+                         class: "chat-goal-selector__label" %>
+
+          <%= form.collection_select :health_goal_id,
+                                     current_user.health_goals,
+                                     :id,
+                                     :name,
+                                     { include_blank: "General conversation" },
+                                     {
+                                       class: "chat-goal-selector__select",
+                                       onchange: "this.form.requestSubmit()"
+                                     } %>
+        <% end %>
+      </div>
     <% end %>
-  <% end %>
+
+    <%= turbo_frame_tag "chat_widget" do %>
+      <div class="coach-chat-card">
+        <div class="coach-chat-card__messages" data-controller="chat-scroll">
+          <% if @chat.messages.any? %>
+            <%= render @chat.messages.order(:created_at) %>
+          <% else %>
+            <p class="coach-chat-card__empty">
+              <% if @chat.health_goal.present? %>
+                👋 Ask your coach anything about
+                <strong><%= @chat.health_goal.name %></strong>
+                to get started.
+              <% else %>
+                👋 Ask your coach anything to get started.
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+
+        <%= form_with model: @message,
+                      url: chat_messages_path(@chat),
+                      class: "coach-chat-card__form" do |f| %>
+
+          <%= f.text_area :content,
+                          value: @suggested_message,
+                          class: "coach-chat-card__input",
+                          rows: 1,
+                          placeholder: "Type your message...",
+                          data: {
+                            controller: "chat-input",
+                            action: "keydown.enter->chat-input#submit"
+                          } %>
+
+          <%= f.button type: "submit",
+                       class: "coach-chat-card__send",
+                       "aria-label": "Send message" do %>
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="18"
+                 height="18">
+              <path d="M12 19V5M12 5L5 12M12 5L19 12"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
