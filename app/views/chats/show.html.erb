@@ -1,35 +1,74 @@
 <div class="coach-page">
   <div class="coach-page__content">
     <div class="coach-intro">
-      <h1 class="coach-intro__title"><%= @chat.title.presence || "Chat" %></h1>
-      <p class="coach-intro__text">About: <%= @chat.health_goal.name %></p>
+      <h1 class="coach-intro__title">
+        <%= @chat.title.presence || "Chat" %>
+      </h1>
+
+      <div class="chat-goal-selector">
+        <%= form_with model: @chat,
+                      method: :patch,
+                      class: "chat-goal-selector__form" do |form| %>
+
+          <%= form.label :health_goal_id,
+                         "Goal",
+                         class: "chat-goal-selector__label" %>
+
+          <%= form.collection_select :health_goal_id,
+                                     current_user.health_goals,
+                                     :id,
+                                     :name,
+                                     {},
+                                     {
+                                       class: "chat-goal-selector__select",
+                                       onchange: "this.form.requestSubmit()"
+                                     } %>
+        <% end %>
+      </div>
     </div>
 
     <%= turbo_frame_tag "chat_widget" do %>
       <div class="coach-chat-card">
         <div class="coach-chat-card__messages" data-controller="chat-scroll">
-          <% if @chat.messages.any? %>
-            <%= render @chat.messages.order(:created_at) %>
-          <% else %>
-            <p class="coach-chat-card__empty">
-              👋 Ask your coach anything about <strong><%= @chat.health_goal.name %></strong> to get started.
-            </p>
-          <% end %>
+            <% if @chat.messages.any? %>
+                 <%= render @chat.messages.order(:created_at) %>
+            <% else %>
+               <div class="coach-chat-card__starter">
+  <span class="coach-chat-card__starter-icon">💬</span>
+  <p class="coach-chat-card__starter-text">
+    Here’s a question to get the conversation started.
+  </p>
+</div>
+            <% end %>
         </div>
 
         <%= form_with model: @message,
                       url: chat_messages_path(@chat),
                       class: "coach-chat-card__form" do |f| %>
-          <%= f.text_area :content,
-                    value: @suggested_message,
-                    class: "coach-chat-card__input",
-                    rows: 1,
-                    placeholder: "Type your message...",
-                    data: { controller: "chat-input", action: "keydown.enter->chat-input#submit" } %>
 
-          <%= f.button type: "submit", class: "coach-chat-card__send", "aria-label": "Send message" do %>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
-              <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <%= f.text_area :content,
+                          value: @suggested_message,
+                          class: "coach-chat-card__input",
+                          rows: 1,
+                          placeholder: "Type your message...",
+                          data: {
+                            controller: "chat-input",
+                            action: "keydown.enter->chat-input#submit"
+                          } %>
+
+          <%= f.button type: "submit",
+                       class: "coach-chat-card__send",
+                       "aria-label": "Send message" do %>
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 xmlns="http://www.w3.org/2000/svg"
+                 width="18"
+                 height="18">
+              <path d="M12 19V5M12 5L5 12M12 5L19 12"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
             </svg>
           <% end %>
         <% end %>
