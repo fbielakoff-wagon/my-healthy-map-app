@@ -25,7 +25,15 @@ class MessagesController < ApplicationController
         redirect_to chat_path(@chat)
       rescue StandardError => e
         Rails.logger.error("RubyLLM error: #{e.class} - #{e.message}")
-        redirect_to chat_path(@chat), alert: "The AI coach couldn't respond right now."
+        # A flash alert here would never be seen — this request is scoped to the
+        # chat_widget turbo frame, and the flash markup lives outside that frame
+        # in the layout, so it silently never renders. Show the failure as a
+        # normal message bubble instead, which is inside the frame either way.
+        @chat.messages.create!(
+          role: "assistant",
+          content: "Sorry, I couldn't get a response just now. Please try again in a moment."
+        )
+        redirect_to chat_path(@chat)
       end
     else
       redirect_to chat_path(@chat), alert: "Could not send message."

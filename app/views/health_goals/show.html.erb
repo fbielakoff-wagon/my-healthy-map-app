@@ -1,30 +1,46 @@
-<div class="container py-5">
-  <h1 class="mb-2"><%= @health_goal.name %></h1>
-  <p class="text-muted"><%= @health_goal.module %></p>
-  <p class="mb-4"><%= @health_goal.content %></p>
-
-  <%= form_with model: Chat.new,
-                url: health_goal_chats_path(@health_goal) do |f| %>
-    <div class="mb-3">
-      <%= f.text_field :title,
-                       class: "form-control",
-                       placeholder: "Optional chat title" %>
-    </div>
-
-    <%= f.submit "Start a chat about this goal",
-                 class: "btn btn-primary" %>
-  <% end %>
-
-  <% if @health_goal.chats.any? %>
-    <h2 class="mt-5 mb-3">Your chats</h2>
-
-    <div class="list-group">
-      <% @health_goal.chats.order(created_at: :desc).each do |chat| %>
-        <%= link_to chat.title.presence ||
-                    "Untitled chat (#{chat.created_at.strftime('%d %b')})",
-                    chat_path(chat),
-                    class: "list-group-item list-group-item-action" %>
+<div class="coach-page">
+  <div class="coach-page__content">
+    <header class="coach-intro">
+      <% if @health_goal.module.present? %>
+        <span class="coach-goal-card__tag"><%= @health_goal.module %></span>
       <% end %>
-    </div>
-  <% end %>
+
+      <h1 class="coach-intro__title"><%= @health_goal.name %></h1>
+      <p class="coach-intro__text"><%= @health_goal.content %></p>
+    </header>
+
+    <section class="coach-section">
+      <%= form_with model: Chat.new,
+                    url: health_goal_chats_path(@health_goal),
+                    class: "coach-start-chat" do |f| %>
+        <%= f.text_field :title,
+                         class: "coach-start-chat__input",
+                         placeholder: "Optional chat title" %>
+
+        <%= f.submit "Start a chat about this goal", class: "coach-cta" %>
+      <% end %>
+    </section>
+
+    <% if @health_goal.chats.any? %>
+      <section class="coach-section">
+        <h2>Your chats</h2>
+
+        <div class="coach-chats-list">
+          <% @health_goal.chats.order(created_at: :desc).each do |chat| %>
+            <%= link_to chat_path(chat), class: "coach-chat-item" do %>
+              <span class="coach-chat-item__icon">💬</span>
+
+              <span class="coach-chat-item__text">
+                <strong>
+                  <%= chat.title.presence || "Untitled chat (#{chat.created_at.strftime('%d %b')})" %>
+                </strong>
+              </span>
+
+              <span class="coach-chat-item__arrow">→</span>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+  </div>
 </div>
