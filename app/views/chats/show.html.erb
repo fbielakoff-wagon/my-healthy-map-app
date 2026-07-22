@@ -7,7 +7,7 @@
 
     <%= turbo_frame_tag "chat_widget" do %>
       <div class="coach-chat-card">
-        <div class="coach-chat-card__messages">
+        <div class="coach-chat-card__messages" data-controller="chat-scroll">
           <% if @chat.messages.any? %>
             <%= render @chat.messages.order(:created_at) %>
           <% else %>
@@ -24,7 +24,8 @@
                     value: @suggested_message,
                     class: "coach-chat-card__input",
                     rows: 1,
-                    placeholder: "Type your message..." %>
+                    placeholder: "Type your message...",
+                    data: { controller: "chat-input", action: "keydown.enter->chat-input#submit" } %>
 
           <%= f.button type: "submit", class: "coach-chat-card__send", "aria-label": "Send message" do %>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">

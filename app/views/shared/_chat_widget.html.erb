@@ -18,7 +18,7 @@
             <%= button_to "Start a conversation",
                           health_goal_chats_path(active_goal),
                           method: :post,
-                          params: { chat: { title: "General coaching" } },
+                          params: { new_chat: true, chat: { title: "General coaching" } },
                           class: "coach-intro__button" %>
           <% else %>
             <p>Set a health goal first to start chatting.</p>

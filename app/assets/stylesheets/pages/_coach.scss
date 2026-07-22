@@ -117,11 +117,19 @@
   font-size: 0.9rem;
 }
 
+// A <button> inside a form now, not a link — reset the native button chrome
+// so it still reads as a plain clickable card area.
 .coach-goal-card__body {
   display: block;
+  width: 100%;
   padding: 20px;
+  border: 0;
+  background: none;
   color: inherit;
   text-decoration: none;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
 }
 
 .coach-goal-card__tag {
@@ -206,16 +214,21 @@
 // separately-styled boxes stacked on top of each other.
 .coach-chat-card {
   max-width: 640px;
+  max-height: calc(100vh - 320px);
   margin: 0 auto;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .coach-chat-card__messages {
   padding: 24px 28px;
   min-height: 100px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .coach-chat-card__empty {
@@ -231,6 +244,7 @@
   gap: 12px;
   padding: 16px 20px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0; // never gets squeezed out or scrolled away
 }
 
 .coach-chat-card__input {
@@ -350,4 +364,3 @@
     border-color: $forest;
   }
 }
-

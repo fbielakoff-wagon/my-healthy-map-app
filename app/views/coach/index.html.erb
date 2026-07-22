@@ -12,6 +12,7 @@
                       health_goal_chats_path(@active_goal),
                       method: :post,
                       params: {
+                        new_chat: true,
                         chat: {
                           title: "General coaching"
                         }
@@ -41,7 +42,9 @@
                 ✏️
               <% end %>
 
-              <%= link_to health_goal_path(goal), class: "coach-goal-card__body" do %>
+              <%= button_to health_goal_chats_path(goal),
+                            method: :post,
+                            class: "coach-goal-card__body" do %>
                 <% if goal.module.present? %>
                   <span class="coach-goal-card__tag"><%= goal.module %></span>
                 <% end %>
