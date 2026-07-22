@@ -5,52 +5,41 @@
         <%= @chat.title.presence || "Chat" %>
       </h1>
 
-      <p class="coach-intro__text">
-        <% if @chat.health_goal.present? %>
-          About: <%= @chat.health_goal.name %>
-        <% else %>
-          General conversation
+      <div class="chat-goal-selector">
+        <%= form_with model: @chat,
+                      method: :patch,
+                      class: "chat-goal-selector__form" do |form| %>
+
+          <%= form.label :health_goal_id,
+                         "Goal",
+                         class: "chat-goal-selector__label" %>
+
+          <%= form.collection_select :health_goal_id,
+                                     current_user.health_goals,
+                                     :id,
+                                     :name,
+                                     {},
+                                     {
+                                       class: "chat-goal-selector__select",
+                                       onchange: "this.form.requestSubmit()"
+                                     } %>
         <% end %>
-      </p>
+      </div>
     </div>
-
-    <div class="chat-goal-selector">
-  <%= form_with model: @chat,
-                method: :patch,
-                class: "chat-goal-selector__form" do |form| %>
-
-    <%= form.label :health_goal_id,
-                   "This conversation is about:",
-                   class: "chat-goal-selector__label" %>
-
-    <%= form.collection_select :health_goal_id,
-                               current_user.health_goals,
-                               :id,
-                               :name,
-                               {},
-                               {
-                                 class: "chat-goal-selector__select",
-                                 onchange: "this.form.requestSubmit()"
-                               } %>
-  <% end %>
-</div>
 
     <%= turbo_frame_tag "chat_widget" do %>
       <div class="coach-chat-card">
         <div class="coach-chat-card__messages" data-controller="chat-scroll">
-          <% if @chat.messages.any? %>
-            <%= render @chat.messages.order(:created_at) %>
-          <% else %>
-            <p class="coach-chat-card__empty">
-              <% if @chat.health_goal.present? %>
-                👋 Ask your coach anything about
-                <strong><%= @chat.health_goal.name %></strong>
-                to get started.
-              <% else %>
-                👋 Ask your coach anything to get started.
-              <% end %>
-            </p>
-          <% end %>
+            <% if @chat.messages.any? %>
+                 <%= render @chat.messages.order(:created_at) %>
+            <% else %>
+               <div class="coach-chat-card__starter">
+  <span class="coach-chat-card__starter-icon">💬</span>
+  <p class="coach-chat-card__starter-text">
+    Here’s a question to get the conversation started.
+  </p>
+</div>
+            <% end %>
         </div>
 
         <%= form_with model: @message,

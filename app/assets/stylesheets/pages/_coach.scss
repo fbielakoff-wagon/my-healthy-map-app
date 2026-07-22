@@ -364,3 +364,20 @@
     border-color: $forest;
   }
 }
+
+.coach-chat-card__starter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 32px;
+}
+
+.coach-chat-card__starter-icon {
+  font-size: 20px;
+}
+
+.coach-chat-card__starter-text {
+  margin: 0;
+  color: $moss-gray;
+  font-size: 15px;
+}
