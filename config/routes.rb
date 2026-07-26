@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resource :profile, only: [:edit, :update]
 
+  get "/map/nearby", to: "map#nearby", as: :map_nearby
   get "coach", to: "coach#index", as: :coach
   get "map", to: "map#index"
   get "map/search", to: "map#search"
