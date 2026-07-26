@@ -21,6 +21,24 @@ class MapController < ApplicationController
     @center = { lat: result.coordinates[0], lng: result.coordinates[1], address: result.address } if result
   end
 
+  def nearby
+    lat      = params[:lat]
+    lng      = params[:lng]
+    category = params[:category].presence_in(Spot::CATEGORIES)
+
+    return render json: { error: "lat/lng required" }, status: :bad_request if lat.blank? || lng.blank?
+
+    categories = category ? [category] : Spot::CATEGORIES
+
+    spots = categories.flat_map do |cat|
+      NearbySpotsFetcher.new(lat: lat, lng: lng, category: cat).call.to_a
+    end
+
+    render json: spots.as_json(
+      only: %i[id name category subcategory latitude longitude address source]
+    )
+  end
+
   def search
     @mapbox_token = ENV.fetch("MAPBOX_API_KEY", nil)
     @spots = Spot.all

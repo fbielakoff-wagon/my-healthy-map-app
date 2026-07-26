@@ -1,8 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import mapboxgl from "mapbox-gl"
 
-// Same colors as $food-coral / $movement-blue / $wellbeing-lilac in
-// app/assets/stylesheets/config/_colors.scss.
 const CATEGORY_COLORS = {
   food: "#ec7964",
   fitness: "#93bec2",
@@ -22,12 +20,10 @@ export default class extends Controller {
   connect() {
     mapboxgl.accessToken = this.tokenValue
 
-    // A search result sets centerValue server-side — honor that over geolocation,
-    // since the user explicitly asked to look at a specific place.
     const hasSearchCenter = this.hasCenterValue && Object.keys(this.centerValue).length > 0
     const initialCenter = hasSearchCenter
       ? [this.centerValue.lng, this.centerValue.lat]
-      : [-0.0778, 51.5074] // London fallback — Mapbox wants [longitude, latitude], not lat/lng
+      : [-0.0778, 51.5074]
 
     this.map = new mapboxgl.Map({
       container: this.mapContainerTarget,
@@ -40,16 +36,49 @@ export default class extends Controller {
 
     if (hasSearchCenter) {
       this.showSearchMarker(this.centerValue.lng, this.centerValue.lat, this.centerValue.address)
-    } else {
-      this.centerOnUserLocation()
     }
+
+    this.locateAndLoad()
+  }
+
+  locateAndLoad() {
+    if (!navigator.geolocation) return
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const { latitude: lat, longitude: lng } = coords
+
+        this.map.flyTo({ center: [lng, lat], zoom: 14 })
+
+        const res = await fetch(`/map/nearby?lat=${lat}&lng=${lng}`)
+        if (!res.ok) return
+
+        const spots = await res.json()
+        this.renderApiMarkers(spots)
+      },
+      () => console.log("Geolocation declined — showing seeded spots")
+    )
+  }
+
+  renderApiMarkers(spots) {
+    spots.forEach((spot) => {
+      const el = document.createElement("div")
+      el.className = "spot-marker"
+      el.style.backgroundColor = CATEGORY_COLORS[spot.category] || "#6c757d"
+      el.textContent = CATEGORY_EMOJI[spot.category] || "📍"
+
+      new mapboxgl.Marker({ element: el })
+        .setLngLat([spot.longitude, spot.latitude])
+        .setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
+        .addTo(this.map)
+    })
   }
 
   addMarkers() {
     this.markers = this.spotsValue.map((spot) => {
       const el = document.createElement("div")
       el.className = "spot-marker"
-      el.style.backgroundColor = CATEGORY_COLORS[spot.category] || "#6c757d" // grey fallback for any other category
+      el.style.backgroundColor = CATEGORY_COLORS[spot.category] || "#6c757d"
       el.textContent = CATEGORY_EMOJI[spot.category] || "📍"
 
       const marker = new mapboxgl.Marker({ element: el })
@@ -61,31 +90,29 @@ export default class extends Controller {
     })
   }
 
-  // Built via DOM methods (not setHTML with a template string) so a spot name
-  // containing markup — once spots become user-submittable — can't inject HTML.
-buildPopup(spot) {
-  const wrapper = document.createElement("div")
-  wrapper.className = "spot-popup"
+  buildPopup(spot) {
+    const wrapper = document.createElement("div")
+    wrapper.className = "spot-popup"
 
-  const emoji = document.createElement("div")
-  emoji.className = "spot-popup__emoji"
-  emoji.textContent = CATEGORY_EMOJI[spot.category] || "📍"
+    const emoji = document.createElement("div")
+    emoji.className = "spot-popup__emoji"
+    emoji.textContent = CATEGORY_EMOJI[spot.category] || "📍"
 
-  const name = document.createElement("h3")
-  name.className = "spot-popup__title"
-  name.textContent = spot.name
+    const name = document.createElement("h3")
+    name.className = "spot-popup__title"
+    name.textContent = spot.name
 
-  const link = document.createElement("a")
-  link.className = "spot-popup__link"
-  link.href = `/spots/${spot.id}`
-  link.textContent = "View spot →"
+    const link = document.createElement("a")
+    link.className = "spot-popup__link"
+    link.href = `/spots/${spot.id}`
+    link.textContent = "View spot →"
 
-  wrapper.appendChild(emoji)
-  wrapper.appendChild(name)
-  wrapper.appendChild(link)
+    wrapper.appendChild(emoji)
+    wrapper.appendChild(name)
+    wrapper.appendChild(link)
 
-  return wrapper
-}
+    return wrapper
+  }
 
   filterByCategory(event) {
     const category = event.currentTarget.dataset.category
@@ -100,8 +127,6 @@ buildPopup(spot) {
     })
   }
 
-  // Debounce: wait for a pause in typing before hitting Mapbox, instead of
-  // firing a request on every keystroke.
   suggestLocations() {
     clearTimeout(this.suggestTimeout)
     this.suggestTimeout = setTimeout(() => this.fetchSuggestions(), 300)
@@ -115,8 +140,6 @@ buildPopup(spot) {
       return
     }
 
-    // Our own spots first — exact matches from data we actually have, no
-    // network request needed since spotsValue is already loaded on the page.
     const spotMatches = this.matchingSpots(query)
     const addressMatches = await this.fetchAddressSuggestions(query)
 
@@ -138,8 +161,6 @@ buildPopup(spot) {
   }
 
   async fetchAddressSuggestions(query) {
-    // Bias results toward where the map is currently centered, and restrict
-    // to addresses/POIs so streets surface instead of city/region names.
     const { lng, lat } = this.map.getCenter()
     const url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
       `${encodeURIComponent(query)}.json` +
@@ -164,7 +185,7 @@ buildPopup(spot) {
       const button = document.createElement("button")
       button.type = "button"
       button.className = "list-group-item list-group-item-action"
-      button.textContent = `${suggestion.emoji} ${suggestion.label}` // textContent, not innerHTML — never trust external content as markup
+      button.textContent = `${suggestion.emoji} ${suggestion.label}`
       button.dataset.action = "click->map#selectSuggestion"
       button.dataset.index = index
       this.suggestionsTarget.appendChild(button)
@@ -179,8 +200,6 @@ buildPopup(spot) {
     this.map.flyTo({ center: suggestion.lngLat, zoom: 15 })
 
     if (suggestion.type === "spot") {
-      // The matching marker might be hidden by the category filter — reset
-      // to "All" so the spot the user just searched for is actually visible.
       this.resetCategoryFilter()
       const match = this.markers.find(({ id }) => id === suggestion.spotId)
       if (match) match.marker.togglePopup()
@@ -197,13 +216,9 @@ buildPopup(spot) {
   }
 
   hideSuggestionsSoon() {
-    // Delay clearing so a click on a suggestion (which blurs the input first) still registers.
     setTimeout(() => { this.suggestionsTarget.innerHTML = "" }, 150)
   }
 
-  // Drops a single pin for "the place you searched for" — distinct from the
-  // round category markers, and replaces any previous search pin rather than
-  // stacking one per search.
   showSearchMarker(lng, lat, label) {
     if (this.searchMarker) this.searchMarker.remove()
 
@@ -216,16 +231,14 @@ buildPopup(spot) {
   }
 
   centerOnUserLocation() {
-    if (!("geolocation" in navigator)) return // browser doesn't support it — keep the London fallback
+    if (!("geolocation" in navigator)) return
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { longitude, latitude } = position.coords
         this.map.flyTo({ center: [longitude, latitude], zoom: 14 })
       },
-      () => {
-        // user denied the permission prompt, or it failed — keep the London fallback center
-      }
+      () => {}
     )
   }
 }
