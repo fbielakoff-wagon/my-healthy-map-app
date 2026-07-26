@@ -68,6 +68,7 @@ export default class extends Controller {
       async ({ coords }) => {
         const { latitude: lat, longitude: lng } = coords
         this.userLocation = { lat, lng }
+        this.showUserMarker(lat, lng)
 
         this.map.flyTo({ center: [lng, lat], zoom: 14 })
 
@@ -89,6 +90,20 @@ export default class extends Controller {
     this.markers.forEach(({ marker, spot }) => {
       marker.setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
     })
+  }
+
+  showUserMarker(lat, lng) {
+    if (this.userMarker) {
+      this.userMarker.setLngLat([lng, lat])
+      return
+    }
+
+    const el = document.createElement("div")
+    el.className = "user-location-marker"
+
+    this.userMarker = new mapboxgl.Marker({ element: el })
+      .setLngLat([lng, lat])
+      .addTo(this.map)
   }
 
   renderApiMarkers(spots) {
@@ -142,6 +157,15 @@ export default class extends Controller {
       distance.className = "spot-popup__distance"
       distance.textContent = formatDistance(km)
       wrapper.appendChild(distance)
+
+      const routeButton = document.createElement("button")
+      routeButton.type = "button"
+      routeButton.className = "spot-popup__route-button"
+      routeButton.textContent = "Show route"
+      routeButton.dataset.action = "click->map#showRoute"
+      routeButton.dataset.lat = spot.latitude
+      routeButton.dataset.lng = spot.longitude
+      wrapper.appendChild(routeButton)
     }
 
     const link = document.createElement("a")
@@ -151,6 +175,49 @@ export default class extends Controller {
     wrapper.appendChild(link)
 
     return wrapper
+  }
+
+  async showRoute(event) {
+    if (!this.userLocation) return
+
+    const spotLat = parseFloat(event.currentTarget.dataset.lat)
+    const spotLng = parseFloat(event.currentTarget.dataset.lng)
+    const { lat: userLat, lng: userLng } = this.userLocation
+
+    const url = "https://api.mapbox.com/directions/v5/mapbox/walking/" +
+      `${userLng},${userLat};${spotLng},${spotLat}` +
+      `?geometries=geojson&access_token=${this.tokenValue}`
+
+    const response = await fetch(url)
+    const data = await response.json()
+    const route = data.routes?.[0]
+    if (!route) return
+
+    this.drawRoute(route.geometry)
+
+    const bounds = route.geometry.coordinates.reduce(
+      (bounds, coord) => bounds.extend(coord),
+      new mapboxgl.LngLatBounds()
+    )
+    this.map.fitBounds(bounds, { padding: 60 })
+  }
+
+  drawRoute(geometry) {
+    const geojson = { type: "Feature", properties: {}, geometry }
+
+    if (this.map.getSource("route")) {
+      this.map.getSource("route").setData(geojson)
+      return
+    }
+
+    this.map.addSource("route", { type: "geojson", data: geojson })
+    this.map.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": "#145c42", "line-width": 4 }
+    })
   }
 
   filterByCategory(event) {
