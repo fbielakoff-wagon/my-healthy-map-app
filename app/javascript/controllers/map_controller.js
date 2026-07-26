@@ -36,8 +36,6 @@ export default class extends Controller {
 
     if (hasSearchCenter) {
       this.showSearchMarker(this.centerValue.lng, this.centerValue.lat, this.centerValue.address)
-    } else {
-      this.centerOnUserLocation()
     }
 
     this.locateAndLoad()
