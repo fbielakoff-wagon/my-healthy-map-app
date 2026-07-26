@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_20_092025) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_26_113911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,15 +97,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_20_092025) do
 
   create_table "spots", force: :cascade do |t|
     t.string "address"
+    t.string "cache_tile"
     t.string "category"
     t.string "city"
     t.datetime "created_at", null: false
     t.text "description"
+    t.string "external_id"
+    t.datetime "fetched_at"
     t.float "latitude"
     t.float "longitude"
     t.string "name"
+    t.string "source", default: "seed", null: false
+    t.string "subcategory"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["cache_tile", "category"], name: "index_spots_on_cache_tile_and_category"
+    t.index ["external_id"], name: "index_spots_on_external_id", unique: true
+    t.index ["source"], name: "index_spots_on_source"
     t.index ["user_id"], name: "index_spots_on_user_id"
   end
 

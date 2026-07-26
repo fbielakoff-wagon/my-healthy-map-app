@@ -1,14 +1,20 @@
 class Spot < ApplicationRecord
-  belongs_to :user
+  CATEGORIES = %w[food fitness wellness].freeze
 
-  has_many :reviews, dependent: :destroy
+  belongs_to :user, optional: true
+
+  has_many :reviews,    dependent: :destroy
   has_many :favourites, dependent: :destroy
-  has_many :shares, dependent: :destroy
-  has_many :chats, dependent: :nullify
+  has_many :shares,     dependent: :destroy
+  has_many :chats,      dependent: :nullify
 
-  CATEGORIES = %w[food wellness fitness].freeze
-
-  validates :name, presence: true
+  validates :name,     presence: true
   validates :category, presence: true, inclusion: { in: CATEGORIES }
-  validates :city, presence: true
+  validates :city,     presence: true, unless: -> { source == "mapbox" }
+  validates :latitude, :longitude, presence: true
+  validates :external_id, uniqueness: true, allow_nil: true
+
+  scope :curated,  -> { where(source: "seed") }
+  scope :from_api, -> { where(source: "mapbox") }
+  scope :by_category, ->(c) { where(category: c) if c.in?(CATEGORIES) }
 end
