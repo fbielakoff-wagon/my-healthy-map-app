@@ -13,6 +13,26 @@ const CATEGORY_EMOJI = {
   wellness: "🧘"
 }
 
+// Haversine formula — straight-line ("as the crow flies") distance between
+// two lat/lng points, in km. Good enough for "roughly how far is this spot",
+// not turn-by-turn walking/driving distance.
+function distanceKm(lat1, lng1, lat2, lng2) {
+  const toRad = (deg) => (deg * Math.PI) / 180
+  const earthRadiusKm = 6371
+
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+
+  return earthRadiusKm * 2 * Math.asin(Math.sqrt(a))
+}
+
+function formatDistance(km) {
+  return km < 1 ? `${Math.round(km * 1000)} m away` : `${km.toFixed(1)} km away`
+}
+
 export default class extends Controller {
   static values = { token: String, spots: Array, center: Object }
   static targets = ["mapContainer", "filterButton", "addressInput", "suggestions"]
@@ -47,8 +67,14 @@ export default class extends Controller {
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         const { latitude: lat, longitude: lng } = coords
+        this.userLocation = { lat, lng }
+        this.showUserMarker(lat, lng)
 
         this.map.flyTo({ center: [lng, lat], zoom: 14 })
+
+        // The seeded-spot markers were already built in addMarkers(), before
+        // we knew where the user is — rebuild their popups now that we do.
+        this.refreshDistances()
 
         const res = await fetch(`/map/nearby?lat=${lat}&lng=${lng}`)
         if (!res.ok) return
@@ -58,6 +84,26 @@ export default class extends Controller {
       },
       () => console.log("Geolocation declined — showing seeded spots")
     )
+  }
+
+  refreshDistances() {
+    this.markers.forEach(({ marker, spot }) => {
+      marker.setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
+    })
+  }
+
+  showUserMarker(lat, lng) {
+    if (this.userMarker) {
+      this.userMarker.setLngLat([lng, lat])
+      return
+    }
+
+    const el = document.createElement("div")
+    el.className = "user-location-marker"
+
+    this.userMarker = new mapboxgl.Marker({ element: el })
+      .setLngLat([lng, lat])
+      .addTo(this.map)
   }
 
   renderApiMarkers(spots) {
@@ -86,7 +132,7 @@ export default class extends Controller {
         .setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
         .addTo(this.map)
 
-      return { marker, category: spot.category, id: spot.id }
+      return { marker, category: spot.category, id: spot.id, spot }
     })
   }
 
@@ -102,16 +148,76 @@ export default class extends Controller {
     name.className = "spot-popup__title"
     name.textContent = spot.name
 
+    wrapper.appendChild(emoji)
+    wrapper.appendChild(name)
+
+    if (this.userLocation) {
+      const km = distanceKm(this.userLocation.lat, this.userLocation.lng, spot.latitude, spot.longitude)
+      const distance = document.createElement("p")
+      distance.className = "spot-popup__distance"
+      distance.textContent = formatDistance(km)
+      wrapper.appendChild(distance)
+
+      const routeButton = document.createElement("button")
+      routeButton.type = "button"
+      routeButton.className = "spot-popup__route-button"
+      routeButton.textContent = "Show route"
+      routeButton.dataset.action = "click->map#showRoute"
+      routeButton.dataset.lat = spot.latitude
+      routeButton.dataset.lng = spot.longitude
+      wrapper.appendChild(routeButton)
+    }
+
     const link = document.createElement("a")
     link.className = "spot-popup__link"
     link.href = `/spots/${spot.id}`
     link.textContent = "View spot →"
-
-    wrapper.appendChild(emoji)
-    wrapper.appendChild(name)
     wrapper.appendChild(link)
 
     return wrapper
+  }
+
+  async showRoute(event) {
+    if (!this.userLocation) return
+
+    const spotLat = parseFloat(event.currentTarget.dataset.lat)
+    const spotLng = parseFloat(event.currentTarget.dataset.lng)
+    const { lat: userLat, lng: userLng } = this.userLocation
+
+    const url = "https://api.mapbox.com/directions/v5/mapbox/walking/" +
+      `${userLng},${userLat};${spotLng},${spotLat}` +
+      `?geometries=geojson&access_token=${this.tokenValue}`
+
+    const response = await fetch(url)
+    const data = await response.json()
+    const route = data.routes?.[0]
+    if (!route) return
+
+    this.drawRoute(route.geometry)
+
+    const bounds = route.geometry.coordinates.reduce(
+      (bounds, coord) => bounds.extend(coord),
+      new mapboxgl.LngLatBounds()
+    )
+    this.map.fitBounds(bounds, { padding: 60 })
+  }
+
+  drawRoute(geometry) {
+    const geojson = { type: "Feature", properties: {}, geometry }
+
+    if (this.map.getSource("route")) {
+      this.map.getSource("route").setData(geojson)
+      return
+    }
+
+    this.map.addSource("route", { type: "geojson", data: geojson })
+    this.map.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: { "line-join": "round", "line-cap": "round" },
+      paint: { "line-color": "#145c42", "line-width": 4 }
+    })
   }
 
   filterByCategory(event) {

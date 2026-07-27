@@ -48,6 +48,34 @@
   cursor: pointer;
 }
 
+.user-location-marker {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4285f4;
+  border: 3px solid white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border-radius: 50%;
+    background: rgba(66, 133, 244, 0.25);
+    animation: user-location-pulse 2s ease-out infinite;
+  }
+}
+
+@keyframes user-location-pulse {
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 .recent-spots {
   margin-top: 40px;
 }
@@ -172,6 +200,32 @@
   font-weight: 700;
   line-height: 1.2;
   color: $ink;
+}
+
+.spot-popup__distance {
+  margin: 0 0 8px;
+  color: $moss-gray;
+  font-size: 12px;
+}
+
+.spot-popup__route-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid $forest;
+  color: $forest;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(20, 92, 66, 0.08);
+  }
 }
 
 .spot-popup__link {
