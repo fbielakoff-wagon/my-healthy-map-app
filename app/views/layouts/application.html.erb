@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "My Healthy Map App" %></title>
+    <title><%= content_for(:title) || "My Healthy Map - Find Your Next Healthy Spot" %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="My Healthy Map App">
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
+    <meta property="og:title" content="<%= content_for(:title) || "My Healthy Map - Find Your Next Healthy Spot" %>">
+    <meta property="og:description" content="Discover food, fitness & wellness spots near you, wherever you are in the city.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:image" content="<%= image_url("og-image.png") %>">
 
     <%= yield :head %>
 
