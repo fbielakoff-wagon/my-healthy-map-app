@@ -1,6 +1,11 @@
 class Spot < ApplicationRecord
   CATEGORIES = %w[food fitness wellness].freeze
 
+  # Lets us call Spot.near([lat, lng], radius_km) — pure SQL distance
+  # filtering/ordering on the existing latitude/longitude columns, no
+  # migration or external geocoding call involved.
+  reverse_geocoded_by :latitude, :longitude
+
   belongs_to :user, optional: true
 
   has_many :reviews,    dependent: :destroy
