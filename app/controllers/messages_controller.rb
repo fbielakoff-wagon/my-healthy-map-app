@@ -95,9 +95,18 @@ class MessagesController < ApplicationController
       Current spot being discussed:
       #{current_spot_text}
 
+      Spots currently near the user (each belongs to one category: food,
+      fitness, or wellness):
+      #{nearby_spots_text}
+
       When a current spot is provided, directly explain how it could support the
       user's health goal. Give practical, realistic suggestions based only on the
       supplied information.
+
+      If the user asks you to find or recommend a spot (e.g. "healthy spots for
+      fitness around me" or "what's the best spot nearby"), recommend ONLY from
+      the "Spots currently near the user" list above — never invent one. Refer to
+      it using the markdown link already given, so the user can open it directly.
 
       Keep the response supportive, concise and actionable.
 
@@ -107,6 +116,25 @@ class MessagesController < ApplicationController
       If essential information is missing, say what is unknown or ask one concise
       clarifying question.
     PROMPT
+  end
+
+  # Real spots near the user, with a markdown link to each, so the AI can
+  # recommend an actual place instead of inventing one. Same NearbySpotsFetcher
+  # the map itself uses, so this usually hits its 24h cache rather than
+  # calling Mapbox again.
+  def nearby_spots_text
+    lat = params[:lat]
+    lng = params[:lng]
+
+    return "The user's location isn't available right now." if lat.blank? || lng.blank?
+
+    spots = Spot::CATEGORIES.flat_map do |category|
+      NearbySpotsFetcher.new(lat: lat, lng: lng, category: category).call.limit(8)
+    end
+
+    return "No spots found near the user's current location." if spots.empty?
+
+    spots.map { |spot| "- [#{spot.name}](#{spot_path(spot)}) — #{spot.category}, #{spot.address}" }.join("\n")
   end
 
   def maybe_generate_chat_title
