@@ -68,7 +68,10 @@
 .profile-field {
   margin-bottom: 18px;
 
-  label {
+  // Direct-child only — the category chips below are also wrapped in
+  // <label> tags (so clicking anywhere on a chip selects it), but they
+  // live inside .chip-group and get their own look via .chip instead.
+  > label {
     display: block;
     font-size: 13.5px;
     font-weight: 600;
@@ -91,6 +94,49 @@
       border-color: $forest;
       box-shadow: 0 0 0 3px rgba($forest, 0.12);
     }
+  }
+}
+
+.profile-field__label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: $moss-gray;
+  margin-bottom: 6px;
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip-radio-input {
+  // Visually hidden, not display:none, so it stays keyboard-focusable —
+  // the wrapping <label> still toggles it on click either way.
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.profile-field .chip {
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 13.5px;
+
+  // React to the radio's own checked state, not just the server-rendered
+  // .chip--active class — otherwise clicking a chip shows no feedback at
+  // all until the form is submitted and the page reloads.
+  &:has(.chip-radio-input:checked) {
+    background: rgba($primary, 0.08);
+    border-color: rgba($primary, 0.25);
+    color: $primary;
+  }
+
+  &:has(.chip-radio-input:focus-visible) {
+    outline: 2px solid $forest;
+    outline-offset: 2px;
   }
 }
 
