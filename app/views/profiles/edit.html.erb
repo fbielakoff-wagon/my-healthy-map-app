@@ -23,7 +23,7 @@
 
       <div class="profile-field">
         <%= form.label :city, "City" %>
-        <%= form.select :city, ["London", "Munich", "Paris"], include_blank: "Select your city", class: "form-select" %>
+        <%= form.text_field :city, class: "form-control", placeholder: "e.g. London" %>
       </div>
 
       <%= form.submit "Save profile", class: "btn btn-primary" %>
@@ -37,11 +37,16 @@
 
     <%= form_with model: @preference, url: preference_path, method: :patch, local: true do |form| %>
       <div class="profile-field">
-        <%= form.label :categories, "Choose your preferred category" %>
-        <%= form.select :categories,
-                [["Food", "food"], ["Fitness", "fitness"], ["Wellness", "wellness"]],
-                include_blank: "Select a category",
-                class: "form-select" %>
+        <p class="profile-field__label">Choose your preferred category</p>
+
+        <div class="chip-group">
+          <% Spot::CATEGORIES.each do |category| %>
+            <%= form.label :categories, value: category, class: "chip" do %>
+              <%= form.radio_button :categories, category, class: "chip-radio-input" %>
+              <%= category_emoji(category) %> <%= category.capitalize %>
+            <% end %>
+          <% end %>
+        </div>
       </div>
 
       <%= form.submit "Save preferences", class: "btn btn-primary" %>
