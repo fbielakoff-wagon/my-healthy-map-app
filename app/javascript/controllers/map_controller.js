@@ -113,10 +113,16 @@ export default class extends Controller {
       el.style.backgroundColor = CATEGORY_COLORS[spot.category] || "#6c757d"
       el.textContent = CATEGORY_EMOJI[spot.category] || "📍"
 
-      new mapboxgl.Marker({ element: el })
+      const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([spot.longitude, spot.latitude])
         .setPopup(new mapboxgl.Popup().setDOMContent(this.buildPopup(spot)))
         .addTo(this.map)
+
+      // Without this, these markers were invisible to the category filter
+      // (and now the AI search) — only the seeded spots from addMarkers()
+      // were ever tracked, so filtering left every API-fetched spot showing
+      // regardless of category.
+      this.markers.push({ marker, category: spot.category, id: spot.id, spot })
     })
   }
 
@@ -221,15 +227,17 @@ export default class extends Controller {
   }
 
   filterByCategory(event) {
-    const category = event.currentTarget.dataset.category
+    this.applyCategoryFilter(event.currentTarget.dataset.category)
+  }
 
+  applyCategoryFilter(category) {
     this.markers.forEach(({ marker, category: markerCategory }) => {
       const visible = category === "all" || markerCategory === category
       marker.getElement().style.display = visible ? "" : "none"
     })
 
     this.filterButtonTargets.forEach((button) => {
-      button.classList.toggle("chip--active", button === event.currentTarget)
+      button.classList.toggle("chip--active", button.dataset.category === category)
     })
   }
 
@@ -315,10 +323,7 @@ export default class extends Controller {
   }
 
   resetCategoryFilter() {
-    this.markers.forEach(({ marker }) => { marker.getElement().style.display = "" })
-    this.filterButtonTargets.forEach((button) => {
-      button.classList.toggle("chip--active", button.dataset.category === "all")
-    })
+    this.applyCategoryFilter("all")
   }
 
   hideSuggestionsSoon() {

@@ -31,7 +31,7 @@ class NearbySpotsFetcher
   def cached
     Spot.where(category: @category)
         .where(cache_tile: [tile, nil])
-        .order(Arel.sql("CASE WHEN source = 'seed' THEN 0 ELSE 1 END"))
+        .near([@lat, @lng], RADIUS_METERS / 1000.0, units: :km)
         .limit(60)
   end
 

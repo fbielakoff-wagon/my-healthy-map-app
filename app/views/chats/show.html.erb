@@ -44,7 +44,11 @@
 
         <%= form_with model: @message,
                       url: chat_messages_path(@chat),
-                      class: "coach-chat-card__form" do |f| %>
+                      class: "coach-chat-card__form",
+                      data: { controller: "chat-location" } do |f| %>
+
+          <%= hidden_field_tag :lat, nil, data: { chat_location_target: "lat" } %>
+          <%= hidden_field_tag :lng, nil, data: { chat_location_target: "lng" } %>
 
           <%= f.text_area :content,
                           value: @suggested_message,
