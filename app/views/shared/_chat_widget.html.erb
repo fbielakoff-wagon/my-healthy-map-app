@@ -1,7 +1,8 @@
 <% if user_signed_in? %>
   <div class="chat-widget" data-controller="chat-widget">
-    <button class="chat-widget__toggle" data-action="chat-widget#toggle" aria-label="Open coach chat">
+    <button class="chat-widget__toggle" data-chat-widget-target="toggle" data-action="chat-widget#toggle" aria-label="Open coach chat">
       💬
+      <span class="chat-widget__dot" data-chat-widget-target="dot"></span>
     </button>
 
     <div class="chat-widget__panel" data-chat-widget-target="panel">
