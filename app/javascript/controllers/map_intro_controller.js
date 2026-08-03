@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
+const INTRO_STORAGE_KEY = "myHealthyMapIntroSeen"
+
 export default class extends Controller {
   static targets = ["intro", "map", "controls"]
 
@@ -9,6 +11,11 @@ export default class extends Controller {
     this.handleWheel = this.handleWheel.bind(this)
     this.handleTouchStart = this.handleTouchStart.bind(this)
     this.handleTouchMove = this.handleTouchMove.bind(this)
+
+    if (sessionStorage.getItem(INTRO_STORAGE_KEY) === "true") {
+      this.showMap({ animate: false })
+      return
+    }
 
     this.introTarget.addEventListener("wheel", this.handleWheel, {
       passive: false
@@ -24,6 +31,8 @@ export default class extends Controller {
   }
 
   disconnect() {
+    if (!this.hasIntroTarget) return
+
     this.introTarget.removeEventListener("wheel", this.handleWheel)
     this.introTarget.removeEventListener("touchstart", this.handleTouchStart)
     this.introTarget.removeEventListener("touchmove", this.handleTouchMove)
@@ -55,10 +64,17 @@ export default class extends Controller {
     }
   }
 
-  showMap() {
+  showMap({ animate = true } = {}) {
     if (this.revealed) return
 
     this.revealed = true
+    sessionStorage.setItem(INTRO_STORAGE_KEY, "true")
+
+    if (!animate) {
+      this.introTarget.classList.add("map-intro--skip-animation")
+      this.mapTarget.classList.add("map-stage__map--skip-animation")
+      this.controlsTarget.classList.add("map-controls--skip-animation")
+    }
 
     this.introTarget.classList.add("map-intro--hidden")
     this.mapTarget.classList.add("map-stage__map--revealed")

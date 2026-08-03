@@ -552,6 +552,12 @@
     max-width: 420px;
   }
 
+  .map-intro--skip-animation,
+  .map-stage__map--skip-animation,
+  .map-controls--skip-animation {
+    transition: none;
+   }
+
   .map-controls {
     top: 18px;
     left: 16px;
