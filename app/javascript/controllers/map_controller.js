@@ -29,6 +29,13 @@ function distanceKm(lat1, lng1, lat2, lng2) {
   return earthRadiusKm * 2 * Math.asin(Math.sqrt(a))
 }
 
+function starRating(rating, count) {
+  if (!rating) return "No reviews yet"
+  const rounded = Math.round(rating)
+  return `${"★".repeat(rounded)}${"☆".repeat(5 - rounded)} (${count})`
+}
+
+
 function formatDistance(km) {
   return km < 1 ? `${Math.round(km * 1000)} m away` : `${km.toFixed(1)} km away`
 }
@@ -156,6 +163,11 @@ export default class extends Controller {
 
     wrapper.appendChild(emoji)
     wrapper.appendChild(name)
+
+    const rating = document.createElement("p")
+rating.className = "spot-popup__rating"
+rating.textContent = starRating(spot.average_rating, spot.reviews_count)
+wrapper.appendChild(rating)
 
     if (this.userLocation) {
       const km = distanceKm(this.userLocation.lat, this.userLocation.lng, spot.latitude, spot.longitude)

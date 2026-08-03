@@ -35,7 +35,8 @@ class MapController < ApplicationController
     end
 
     render json: spots.as_json(
-      only: %i[id name category subcategory latitude longitude address source]
+      only: %i[id name category subcategory latitude longitude address source],
+      methods: %i[average_rating reviews_count]
     )
   end
 

@@ -22,4 +22,12 @@ class Spot < ApplicationRecord
   scope :curated,  -> { where(source: "seed") }
   scope :from_api, -> { where(source: "mapbox") }
   scope :by_category, ->(c) { where(category: c) if c.in?(CATEGORIES) }
+
+  def average_rating
+    reviews.average(:rating)&.round(1)
+  end
+
+  def reviews_count
+    reviews.count
+  end
 end
