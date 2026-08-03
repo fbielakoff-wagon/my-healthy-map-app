@@ -177,9 +177,14 @@
   }
 }
 
+.coach-chat-item:hover .coach-chat-item__icon {
+  transform: scale(1.15);
+}
+
 .coach-chat-item__icon {
   flex-shrink: 0;
   font-size: 1.1rem;
+  transition: transform 0.15s ease;
 }
 
 .coach-chat-item__text {
@@ -276,10 +281,14 @@
   background: $forest;
   color: #fff;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.1s ease;
 
   &:hover {
     background: $deep-forest;
+  }
+
+  &:active {
+    transform: scale(0.94);
   }
 }
 
@@ -380,4 +389,48 @@
   margin: 0;
   color: $moss-gray;
   font-size: 15px;
+}
+
+.coach-chat-card__typing {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+// Turbo sets `busy` on the <turbo-frame> itself while the form inside it
+// is submitting — this is what actually reveals the indicator.
+turbo-frame#chat_widget[busy] .coach-chat-card__typing {
+  display: flex;
+}
+
+.coach-badge--sm {
+  width: 28px;
+  height: 28px;
+
+  .coach-badge__icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.coach-chat-card__typing-dots {
+  display: inline-flex;
+  gap: 4px;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $moss-gray;
+    animation: coach-typing-bounce 1.2s infinite ease-in-out;
+
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+  }
+}
+
+@keyframes coach-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1; }
 }

@@ -29,7 +29,7 @@
 
     <%= turbo_frame_tag "chat_widget" do %>
       <div class="coach-chat-card">
-        <div class="coach-chat-card__messages" data-controller="chat-scroll">
+       <div class="coach-chat-card__messages" data-controller="chat-scroll">
             <% if @chat.messages.any? %>
                  <%= render @chat.messages.order(:created_at) %>
             <% else %>
@@ -40,6 +40,17 @@
   </p>
 </div>
             <% end %>
+
+            <div class="coach-chat-card__typing" aria-hidden="true">
+              <span class="coach-badge coach-badge--sm">
+                <svg class="coach-badge__icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 2L3 14h7l-1 8 11-14h-7l0-6z"/>
+                </svg>
+              </span>
+              <span class="coach-chat-card__typing-dots">
+                <span></span><span></span><span></span>
+              </span>
+            </div>
         </div>
 
         <%= form_with model: @message,
