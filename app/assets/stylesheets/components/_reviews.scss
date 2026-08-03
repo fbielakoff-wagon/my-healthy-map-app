@@ -1,82 +1,163 @@
 .spot-card__reviews {
   margin-top: 2rem;
-  border-top: 1px solid $moss-gray;
-  padding-top: 1.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(104, 113, 108, 0.18);
+  text-align: left;
 }
 
 .spot-card__reviews-title {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: $ink;
+}
+
+.spot-card__reviews-title .star-rating {
+  font-size: 0.95rem;
 }
 
 .spot-card__reviews-count {
+  font-size: 0.85rem;
+  font-weight: 500;
   color: $moss-gray;
-  font-size: 0.9rem;
 }
 
 .star-rating {
   display: inline-flex;
+  gap: 0.08rem;
 }
 
 .star {
-  color: $moss-gray;
+  color: rgba(104, 113, 108, 0.35);
 }
 
 .star--filled {
-  color: #f5c518;
+  color: #e8b94f;
 }
 
 .star-rating--empty {
   color: $moss-gray;
-  font-style: italic;
   font-size: 0.9rem;
+  font-style: normal;
 }
 
-// Classic "reversed radio + label sibling" star picker
+.review-form {
+  padding: 0.85rem;
+  border: 1px solid rgba(104, 113, 108, 0.14);
+  border-radius: 16px;
+  background: rgba(247, 245, 238, 0.65);
+
+  .form-control {
+    min-height: 72px;
+    margin-bottom: 0.7rem;
+    padding: 0.75rem 0.85rem;
+    border: 1px solid rgba(104, 113, 108, 0.2);
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    resize: vertical;
+
+    &:focus {
+      border-color: rgba(20, 92, 66, 0.45);
+      box-shadow: 0 0 0 3px rgba(20, 92, 66, 0.08);
+    }
+  }
+
+  .btn {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+}
+
+.review-form__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $moss-gray;
+}
+
 .review-form__stars {
   display: flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
-  gap: 0.15rem;
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
+  gap: 0.2rem;
+  margin-bottom: 0.65rem;
+  font-size: 1.35rem;
 
   input[type="radio"] {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
   }
 
   label {
-    color: $moss-gray;
+    margin: 0;
+    color: rgba(104, 113, 108, 0.35);
     cursor: pointer;
+    transition:
+      color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
   }
 
-   input[type="radio"]:checked ~ label,
+  input[type="radio"]:checked ~ label,
   label:hover,
   label:hover ~ label {
-    color: #f5c518;
+    color: #e8b94f;
   }
+
+  input[type="radio"]:focus-visible + label {
+    outline: 2px solid $forest;
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+}
+
+.spot-card__reviews-list {
+  margin-top: 1.25rem;
 }
 
 .review-card {
   padding: 1rem 0;
-  border-bottom: 1px solid $warm-cream;
+  border-bottom: 1px solid rgba(104, 113, 108, 0.14);
 
   &:last-child {
-    border-bottom: none;
+    padding-bottom: 0;
+    border-bottom: 0;
   }
 }
 
 .review-card__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+
+  strong {
+    font-size: 0.92rem;
+    color: $ink;
+  }
+
+  .star-rating {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+  }
 }
 
 .review-card__body {
-  color: $ink;
   margin: 0;
+  color: $moss-gray;
+  font-size: 0.92rem;
+  line-height: 1.55;
 }

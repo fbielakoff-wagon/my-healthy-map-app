@@ -105,7 +105,7 @@
 
 <div class="spot-card__reviews">
   <h2 class="spot-card__reviews-title">
-    Reviews
+  What people say
     <% if @spot.reviews.any? %>
       <%= star_rating(@spot.average_rating) %>
       <span class="spot-card__reviews-count">(<%= @spot.reviews_count %>)</span>
@@ -116,6 +116,7 @@
     <% existing_review = current_user.reviews.find_by(spot: @spot) %>
 
     <%= form_with url: spot_reviews_path(@spot), method: :post, class: "review-form" do %>
+      <p class="review-form__label">Your rating</p>
       <div class="review-form__stars">
         <% (1..5).to_a.reverse_each do |i| %>
           <%= radio_button_tag "review[rating]", i, existing_review&.rating == i, id: "rating_#{i}" %>
@@ -124,7 +125,7 @@
       </div>
 
       <%= text_area_tag "review[body]", existing_review&.body,
-            placeholder: "Share your experience (optional)...",
+            placeholder: "Share a short note about this spot...",
             class: "form-control",
             rows: 3 %>
 
