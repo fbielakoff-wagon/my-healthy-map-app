@@ -1,32 +1,95 @@
 .map-page {
-  max-width: 900px;
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 40px 24px 64px;
 }
 
 .map-page__hero {
+  max-width: 720px;
+  margin: 0 auto 20px;
   text-align: center;
-  margin-bottom: 28px;
 }
 
 .map-page__heading {
-  font-size: 28px;
-  font-weight: 700;
-  color: $ink;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  font-size: clamp(2rem, 3.5vw, 3rem);
 }
 
 .map-page__subheading {
-  font-size: 15px;
-  color: $moss-gray;
-  margin: 0;
+  font-size: 0.95rem;
+}
+
+.map-stage {
+  position: relative;
 }
 
 #map {
   width: 100%;
-  height: 500px;
-  border-radius: 16px;
+  height: 75vh;
+  min-height: 660px;
+  max-height: 860px;
+  border-radius: $border-radius-lg;
   overflow: hidden;
+}
+
+.map-controls {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 4;
+
+  width: 380px;
+  max-width: calc(100% - 48px);
+}
+
+.map-controls__search {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  background: rgba($soft-white, 0.97);
+  border: 1px solid rgba($forest, 0.16);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 8px 24px rgba($ink, 0.12);
+}
+
+.map-controls__search-icon {
+  flex: 0 0 auto;
+  padding-left: 14px;
+  color: $moss-gray;
+  font-size: 0.95rem;
+}
+
+.map-controls__search .form-control {
+  min-width: 0;
+  padding: 0.8rem 0.9rem;
+  font-size: 0.9rem;
+
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+
+  &:focus {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+.map-controls__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.map-controls .chip {
+  padding: 0.3rem 0.65rem;
+  font-size: 0.72rem;
+  background: rgba($soft-white, 0.95);
+  box-shadow: 0 4px 12px rgba($ink, 0.08);
 }
 
 .list-group.position-absolute {
@@ -35,7 +98,6 @@
   max-height: 220px;
   overflow-y: auto;
 }
-
 
 .spot-marker {
   width: 32px;
@@ -51,13 +113,15 @@
 
 .user-location-marker {
   position: relative;
-  z-index: 5; // always sit above the spot markers, however many surround it
+  z-index: 5;
   width: 22px;
   height: 22px;
   border-radius: 50%;
   background: $warm-gold;
   border: 4px solid $soft-white;
-  box-shadow: 0 0 0 2px $forest, 0 2px 6px rgba(0, 0, 0, 0.45);
+  box-shadow:
+    0 0 0 2px $forest,
+    0 2px 6px rgba(0, 0, 0, 0.45);
 
   &::after {
     content: "";
@@ -74,96 +138,106 @@
 }
 
 @keyframes user-location-pulse {
-  0% { transform: scale(0.4); opacity: 1; }
-  100% { transform: scale(1.7); opacity: 0; }
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
 }
 
 .recent-spots {
-  margin-top: 40px;
+  margin-top: 48px;
 }
 
 .recent-spots__title {
-  font-size: 18px;
-  font-weight: 600;
+  margin-bottom: 18px;
   color: $ink;
-  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .recent-spots__category {
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
 .recent-spots__category-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: $moss-gray;
   margin-bottom: 12px;
+  color: $moss-gray;
+  font-size: 0.95rem;
+  font-weight: 600;
   text-transform: capitalize;
 }
 
 .recent-spots__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
 .recent-spot-card {
   display: block;
   position: relative;
-  background: $soft-white;
-  border-radius: 14px;
-  padding: 20px;
-  text-decoration: none;
+  padding: 22px;
   color: $ink;
   text-align: center;
-  transition: transform 0.15s ease;
+  text-decoration: none;
+  background: $soft-white;
+  border-radius: $border-radius-lg;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    text-decoration: none;
+    transform: translateY(-3px);
     color: $ink;
+    text-decoration: none;
+    box-shadow: 0 14px 32px rgba($forest, 0.1);
   }
 
   h4 {
-    margin: 0 0 4px;
-    font-size: 15px;
-    font-weight: 600;
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 700;
   }
 
   p {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     color: $moss-gray;
-    font-size: 13px;
+    font-size: 0.85rem;
   }
 
   .tag {
     display: inline-block;
-    background: $warm-cream;
+    padding: 4px 10px;
     color: $forest;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
     text-transform: capitalize;
+    background: $warm-cream;
+    border-radius: 999px;
   }
 }
 
 .recent-spot-card__emoji {
-  font-size: 28px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: $warm-cream;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 52px;
+  height: 52px;
   margin: 0 auto 12px;
+  font-size: 28px;
+  background: $warm-cream;
+  border-radius: 50%;
 }
 
 .mapboxgl-popup-content {
   padding: 0;
-  border-radius: 10px;
   overflow: hidden;
+  border-radius: 10px;
   box-shadow: 0 6px 16px rgba(20, 45, 35, 0.12);
 }
 
@@ -173,11 +247,11 @@
   width: 18px;
   height: 18px;
   padding: 0;
-  border-radius: 50%;
+  color: $forest;
   font-size: 16px;
   line-height: 1;
-  color: $forest;
   background: transparent;
+  border-radius: 50%;
 
   &:hover {
     background: rgba(20, 92, 66, 0.08);
@@ -198,10 +272,10 @@
 
 .spot-popup__title {
   margin: 0 16px 8px 0;
+  color: $ink;
   font-size: 14px;
   font-weight: 700;
   line-height: 1.2;
-  color: $ink;
 }
 
 .spot-popup__distance {
@@ -215,14 +289,14 @@
   width: 100%;
   margin: 0 0 8px;
   padding: 6px 10px;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid $forest;
   color: $forest;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
+  background: transparent;
+  border: 1px solid $forest;
+  border-radius: 999px;
   transition: background 0.15s ease;
 
   &:hover {
@@ -234,18 +308,57 @@
   display: block;
   width: 100%;
   padding: 6px 10px;
-  border-radius: 999px;
-  background: $forest;
   color: white;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
   text-decoration: none;
+  background: $forest;
+  border-radius: 999px;
   transition: background 0.15s ease;
 
   &:hover {
-    background: darken($forest, 8%);
     color: white;
     text-decoration: none;
+    background: darken($forest, 8%);
+  }
+}
+
+@media (max-width: 768px) {
+  .map-page {
+    padding: 28px 16px 48px;
+  }
+
+  .map-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .map-controls {
+    position: static;
+    order: 1;
+    width: 100%;
+    max-width: none;
+    padding: 14px;
+  }
+
+  #map {
+    order: 2;
+    height: 62vh;
+    min-height: 480px;
+  }
+
+  .map-controls__search {
+    flex-direction: column;
+
+    .form-control,
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .map-page__heading {
+    font-size: 2.25rem;
   }
 }
