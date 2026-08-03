@@ -1,46 +1,48 @@
 .map-page {
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px 24px 64px;
+  padding: 40px 0 64px;
 }
 
 .map-page__hero {
   max-width: 720px;
-  margin: 0 auto 20px;
-  text-align: center;
-}
+  margin: 0 auto 12px;}
 
 .map-page__heading {
   margin-bottom: 6px;
+  color: $ink;
   font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .map-page__subheading {
+  margin: 0;
+  color: $moss-gray;
   font-size: 0.95rem;
 }
 
 .map-stage {
   position: relative;
+  width: 100%;
 }
 
 #map {
   width: 100%;
-  height: 75vh;
-  min-height: 660px;
-  max-height: 860px;
-  border-radius: $border-radius-lg;
+  height: 78vh;
+  min-height: 620px;
+  max-height: 840px;
   overflow: hidden;
+  border-radius: 0;
 }
 
 .map-controls {
   position: absolute;
-  top: 24px;
-  left: 24px;
+  top: 40px;
+  left: 56px;
   z-index: 4;
 
-  width: 380px;
-  max-width: calc(100% - 48px);
+  width: 330px;
+  max-width: calc(100% - 112px);
 }
 
 .map-controls__search {
@@ -48,10 +50,11 @@
   align-items: center;
   overflow: hidden;
 
-  background: rgba($soft-white, 0.97);
-  border: 1px solid rgba($forest, 0.16);
+  background: rgba($soft-white, 0.92);
+  border: 1px solid rgba($forest, 0.14);
   border-radius: $border-radius-lg;
   box-shadow: 0 8px 24px rgba($ink, 0.12);
+  backdrop-filter: blur(8px);
 }
 
 .map-controls__search-icon {
@@ -81,15 +84,16 @@
 .map-controls__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .map-controls .chip {
   padding: 0.3rem 0.65rem;
   font-size: 0.72rem;
-  background: rgba($soft-white, 0.95);
+  background: rgba($soft-white, 0.92);
   box-shadow: 0 4px 12px rgba($ink, 0.08);
+  backdrop-filter: blur(6px);
 }
 
 .list-group.position-absolute {
@@ -100,25 +104,29 @@
 }
 
 .spot-marker {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+
   font-size: 18px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
+
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .user-location-marker {
   position: relative;
   z-index: 5;
+
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+
   background: $warm-gold;
   border: 4px solid $soft-white;
+  border-radius: 50%;
   box-shadow:
     0 0 0 2px $forest,
     0 2px 6px rgba(0, 0, 0, 0.45);
@@ -128,11 +136,13 @@
     position: absolute;
     top: 50%;
     left: 50%;
+
     width: 44px;
     height: 44px;
     margin: -22px 0 0 -22px;
-    border-radius: 50%;
+
     background: rgba(221, 182, 91, 0.35);
+    border-radius: 50%;
     animation: user-location-pulse 2s ease-out infinite;
   }
 }
@@ -150,7 +160,10 @@
 }
 
 .recent-spots {
-  margin-top: 48px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 48px auto 0;
+  padding: 0 24px;
 }
 
 .recent-spots__title {
@@ -181,12 +194,16 @@
 .recent-spot-card {
   display: block;
   position: relative;
+
   padding: 22px;
+
   color: $ink;
   text-align: center;
   text-decoration: none;
+
   background: $soft-white;
   border-radius: $border-radius-lg;
+
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
@@ -213,10 +230,12 @@
   .tag {
     display: inline-block;
     padding: 4px 10px;
+
     color: $forest;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: capitalize;
+
     background: $warm-cream;
     border-radius: 999px;
   }
@@ -226,10 +245,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 52px;
   height: 52px;
   margin: 0 auto 12px;
+
   font-size: 28px;
+
   background: $warm-cream;
   border-radius: 50%;
 }
@@ -237,6 +259,7 @@
 .mapboxgl-popup-content {
   padding: 0;
   overflow: hidden;
+
   border-radius: 10px;
   box-shadow: 0 6px 16px rgba(20, 45, 35, 0.12);
 }
@@ -244,12 +267,15 @@
 .mapboxgl-popup-close-button {
   top: 4px;
   right: 6px;
+
   width: 18px;
   height: 18px;
   padding: 0;
+
   color: $forest;
   font-size: 16px;
   line-height: 1;
+
   background: transparent;
   border-radius: 50%;
 
@@ -289,14 +315,17 @@
   width: 100%;
   margin: 0 0 8px;
   padding: 6px 10px;
+
   color: $forest;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
+
   cursor: pointer;
   background: transparent;
   border: 1px solid $forest;
   border-radius: 999px;
+
   transition: background 0.15s ease;
 
   &:hover {
@@ -308,13 +337,16 @@
   display: block;
   width: 100%;
   padding: 6px 10px;
+
   color: white;
   font-size: 12px;
   font-weight: 600;
   text-align: center;
   text-decoration: none;
+
   background: $forest;
   border-radius: 999px;
+
   transition: background 0.15s ease;
 
   &:hover {
@@ -326,7 +358,16 @@
 
 @media (max-width: 768px) {
   .map-page {
-    padding: 28px 16px 48px;
+    padding: 28px 0 48px;
+  }
+
+  .map-page__hero {
+    margin-bottom: 20px;
+    padding: 0 16px;
+  }
+
+  .map-page__heading {
+    font-size: 2.25rem;
   }
 
   .map-stage {
@@ -338,9 +379,10 @@
   .map-controls {
     position: static;
     order: 1;
-    width: 100%;
+
+    width: auto;
     max-width: none;
-    padding: 14px;
+    margin: 0 16px;
   }
 
   #map {
@@ -349,16 +391,7 @@
     min-height: 480px;
   }
 
-  .map-controls__search {
-    flex-direction: column;
-
-    .form-control,
-    .btn {
-      width: 100%;
-    }
-  }
-
-  .map-page__heading {
-    font-size: 2.25rem;
+  .recent-spots {
+    padding: 0 16px;
   }
 }

@@ -33,73 +33,75 @@
         data-map-target="mapContainer">
       </div>
 
-<div class="map-controls">
-  <div class="position-relative">
-    <%= form_with url: map_search_path,
-                  method: :get,
-                  class: "map-controls__search" do %>
+      <div class="map-controls">
+        <div class="position-relative">
+          <%= form_with url: map_search_path,
+                        method: :get,
+                        class: "map-controls__search" do %>
 
-      <span class="map-controls__search-icon" aria-hidden="true">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
+            <span
+              class="map-controls__search-icon"
+              aria-hidden="true">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
 
-      <input
-        type="text"
-        name="address"
-        class="form-control"
-        autocomplete="off"
-        data-map-target="addressInput"
-        data-action="input->map#suggestLocations blur->map#hideSuggestionsSoon"
-        placeholder="Search by area or address"
-        value="<%= params[:address] %>"
-        aria-label="Search by area or address"
-      >
-    <% end %>
+            <input
+              type="text"
+              name="address"
+              class="form-control"
+              autocomplete="off"
+              data-map-target="addressInput"
+              data-action="input->map#suggestLocations blur->map#hideSuggestionsSoon"
+              placeholder="Search by area or address"
+              value="<%= params[:address] %>"
+              aria-label="Search by area or address"
+            >
+          <% end %>
 
-    <div
-      class="list-group position-absolute w-100"
-      data-map-target="suggestions">
-    </div>
-  </div>
+          <div
+            class="list-group position-absolute w-100"
+            data-map-target="suggestions">
+          </div>
+        </div>
 
-  <div class="map-controls__chips">
-    <button
-      type="button"
-      class="chip chip--active"
-      data-map-target="filterButton"
-      data-action="click->map#filterByCategory"
-      data-category="all">
-      All
-    </button>
+        <div class="map-controls__chips">
+          <button
+            type="button"
+            class="chip chip--active"
+            data-map-target="filterButton"
+            data-action="click->map#filterByCategory"
+            data-category="all">
+            All
+          </button>
 
-    <button
-      type="button"
-      class="chip"
-      data-map-target="filterButton"
-      data-action="click->map#filterByCategory"
-      data-category="food">
-      🥗 Food
-    </button>
+          <button
+            type="button"
+            class="chip"
+            data-map-target="filterButton"
+            data-action="click->map#filterByCategory"
+            data-category="food">
+            🥗 Food
+          </button>
 
-    <button
-      type="button"
-      class="chip"
-      data-map-target="filterButton"
-      data-action="click->map#filterByCategory"
-      data-category="fitness">
-      💪 Fitness
-    </button>
+          <button
+            type="button"
+            class="chip"
+            data-map-target="filterButton"
+            data-action="click->map#filterByCategory"
+            data-category="fitness">
+            💪 Fitness
+          </button>
 
-    <button
-      type="button"
-      class="chip"
-      data-map-target="filterButton"
-      data-action="click->map#filterByCategory"
-      data-category="wellness">
-      🧘 Wellness
-    </button>
-  </div>
-</div>
+          <button
+            type="button"
+            class="chip"
+            data-map-target="filterButton"
+            data-action="click->map#filterByCategory"
+            data-category="wellness">
+            🧘 Wellness
+          </button>
+        </div>
+      </div>
     </div>
 
     <% if user_signed_in? && @recent_saved_spots_by_category.present? %>
