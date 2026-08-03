@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
     @message.role = "user"
     if @message.save
       begin
-        ruby_llm_chat = RubyLLM.chat(model: ENV.fetch("GITHUB_MODELS_MODEL", "gpt-4o-mini"))
+        ruby_llm_chat = RubyLLM.chat(model: ENV.fetch("OPENAI_MODEL", "gpt-4o-mini"))
         ruby_llm_chat.with_instructions(personalised_system_prompt)
 
         @chat.messages
