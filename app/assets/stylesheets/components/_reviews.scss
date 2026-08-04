@@ -1,0 +1,82 @@
+.spot-card__reviews {
+  margin-top: 2rem;
+  border-top: 1px solid $moss-gray;
+  padding-top: 1.5rem;
+}
+
+.spot-card__reviews-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.spot-card__reviews-count {
+  color: $moss-gray;
+  font-size: 0.9rem;
+}
+
+.star-rating {
+  display: inline-flex;
+}
+
+.star {
+  color: $moss-gray;
+}
+
+.star--filled {
+  color: #f5c518;
+}
+
+.star-rating--empty {
+  color: $moss-gray;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+// Classic "reversed radio + label sibling" star picker
+.review-form__stars {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  label {
+    color: $moss-gray;
+    cursor: pointer;
+  }
+
+   input[type="radio"]:checked ~ label,
+  label:hover,
+  label:hover ~ label {
+    color: #f5c518;
+  }
+}
+
+.review-card {
+  padding: 1rem 0;
+  border-bottom: 1px solid $warm-cream;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.review-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.review-card__body {
+  color: $ink;
+  margin: 0;
+}

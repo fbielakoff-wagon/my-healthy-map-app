@@ -103,6 +103,53 @@
   </div>
 <% end %>
 
+<div class="spot-card__reviews">
+  <h2 class="spot-card__reviews-title">
+    Reviews
+    <% if @spot.reviews.any? %>
+      <%= star_rating(@spot.average_rating) %>
+      <span class="spot-card__reviews-count">(<%= @spot.reviews_count %>)</span>
+    <% end %>
+  </h2>
+
+  <% if user_signed_in? %>
+    <% existing_review = current_user.reviews.find_by(spot: @spot) %>
+
+    <%= form_with url: spot_reviews_path(@spot), method: :post, class: "review-form" do %>
+      <div class="review-form__stars">
+        <% (1..5).to_a.reverse_each do |i| %>
+          <%= radio_button_tag "review[rating]", i, existing_review&.rating == i, id: "rating_#{i}" %>
+          <%= label_tag "rating_#{i}", "★" %>
+        <% end %>
+      </div>
+
+      <%= text_area_tag "review[body]", existing_review&.body,
+            placeholder: "Share your experience (optional)...",
+            class: "form-control",
+            rows: 3 %>
+
+      <%= submit_tag existing_review ? "Update review" : "Post review",
+            class: "btn btn-primary",
+            data: { turbo_submits_with: "Saving..." } %>
+    <% end %>
+  <% else %>
+    <%= link_to "Sign in to leave a review", new_user_session_path, class: "spot-card__secondary-link" %>
+  <% end %>
+
+  <div class="spot-card__reviews-list">
+    <% @spot.reviews.includes(:user).order(created_at: :desc).each do |review| %>
+      <div class="review-card">
+        <div class="review-card__header">
+          <strong><%= review.user.name %></strong>
+          <%= star_rating(review.rating) %>
+        </div>
+        <p class="review-card__body"><%= review.body %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
     <%= link_to "Back to map",
                 root_path,
                 class: "spot-card__back" %>

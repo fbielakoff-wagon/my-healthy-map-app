@@ -11,7 +11,8 @@
     data-controller="map map-intro"
     data-map-token-value="<%= @mapbox_token %>"
     data-map-spots-value="<%= @spots.to_json(
-      only: [:id, :name, :category, :latitude, :longitude, :address]
+     only: [:id, :name, :category, :latitude, :longitude, :address],
+     methods: [:average_rating, :reviews_count]
     ) %>"
     <% if @center %>
       data-map-center-value="<%= @center.to_json %>"
