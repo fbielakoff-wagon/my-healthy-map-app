@@ -283,41 +283,80 @@ puts "Done. Created #{created} spots, skipped #{skipped} already-existing spots.
 puts "Cities: #{SPOTS.map { |s| s[:city] }.uniq.join(', ')}"
 puts "Categories: #{SPOTS.map { |s| s[:category] }.uniq.join(', ')}"
 
-# Ruth's test spots (from the favourites feature branch) — kept as-is
-# alongside the main seed data rather than dropped while fixing a merge conflict.
-# Ruth's test spots
-puts "Creating Ruth's test data..."
 
-ruth = User.find_or_create_by!(email: "ruth@example.com") do |user|
-  user.password = "password"
-  user.name = "Ruth"
-end
+puts "== Seeding example reviews =="
 
-test_spots = [
+review_users = [
   {
-    name: "Green Table",
-    category: "food",
-    address: "10 Test Street",
-    city: "London"
+    email: "alex@example.com",
+    name: "Alex",
+    password: "password"
   },
   {
-    name: "City Strength",
-    category: "fitness",
-    address: "20 Test Road",
-    city: "London"
+    email: "maya@example.com",
+    name: "Maya",
+    password: "password"
   },
   {
-    name: "Calm Studio",
-    category: "wellness",
-    address: "30 Test Lane",
-    city: "London"
+    email: "sam@example.com",
+    name: "Sam",
+    password: "password"
   }
-]
-
-test_spots.each do |attrs|
-  Spot.find_or_create_by!(name: attrs[:name], city: attrs[:city]) do |spot|
-    spot.assign_attributes(attrs.merge(user: ruth))
+].map do |attributes|
+  User.find_or_create_by!(email: attributes[:email]) do |user|
+    user.name = attributes[:name]
+    user.password = attributes[:password]
   end
 end
 
-puts "Done!"
+review_texts = {
+  "food" => [
+    [5, "Fresh food, friendly service and a good option for a quick healthy lunch."],
+    [4, "Really enjoyed the food. It was busy when I visited, but worth the wait."],
+    [5, "A relaxed spot with plenty of lighter choices and generous portions."]
+  ],
+  "fitness" => [
+    [5, "Welcoming atmosphere, helpful staff and a good range of equipment."],
+    [4, "A solid place to train. Clean facilities and a good selection of classes."],
+    [5, "Friendly and motivating without feeling intimidating."]
+  ],
+  "wellness" => [
+    [5, "A calm and welcoming space. I left feeling genuinely refreshed."],
+    [4, "Professional staff and a relaxing experience from start to finish."],
+    [5, "A lovely place to slow down and reset after a busy week."]
+  ]
+}
+
+target_terms = [
+  "KIN Restaurant",
+  "Mildreds Soho",
+  "Third Space",
+  "The Font Climbing",
+  "Covent Garden Physiotherapy",
+  "Biome by Corinthia London",
+  "Harvest"
+]
+
+spots_to_review = Spot
+  .where(
+    target_terms.map { "name ILIKE ?" }.join(" OR "),
+    *target_terms.map { |term| "%#{term}%" }
+  )
+  .order(:category, :name)
+
+spots_to_review.each_with_index do |spot, index|
+  user = review_users[index % review_users.length]
+  rating, body = review_texts.fetch(spot.category)[index % 3]
+
+  review = Review.find_or_initialize_by(
+    user: user,
+    spot: spot
+  )
+
+  review.update!(
+    rating: rating,
+    body: body
+  )
+end
+
+puts "Seeded #{spots_to_review.length} example reviews"
